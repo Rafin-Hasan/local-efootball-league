@@ -2,26 +2,280 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+ * Liquid Glass material system.
+ *
+ * Glass only reads as glass when there is something behind it to refract, so
+ * the page paints a soft colour field first (see `.aurora`) and every surface
+ * above it is translucent. Each material carries three cues:
+ *   1. blur + saturation  — the frosted refraction itself
+ *   2. a bright inset top edge — the specular highlight catching the light
+ *   3. a wide, soft drop shadow — the sense of the pane floating above content
+ */
 
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --glass-blur: 22px;
+    --glass-saturate: 180%;
+    --specular: rgba(255, 255, 255, 0.92);
+    --rim: rgba(255, 255, 255, 0.62);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-ink-50 text-ink antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  ::selection {
+    @apply bg-brand-500 text-white;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand-500 ring-offset-2 ring-offset-white;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .display {
+    @apply font-display font-extrabold uppercase italic tracking-tight;
+  }
+
+  /* ------------------------------------------------------------- materials */
+
+  /* The standard pane. Used for cards, panels and anything that floats. */
+  .glass {
+    background-image: linear-gradient(
+      158deg,
+      rgba(255, 255, 255, 0.74),
+      rgba(255, 255, 255, 0.44)
+    );
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur))
+      saturate(var(--glass-saturate));
+    border: 1px solid var(--rim);
+    box-shadow:
+      inset 0 1px 0 0 var(--specular),
+      inset 0 -1px 0 0 rgba(255, 255, 255, 0.28),
+      0 2px 6px -2px rgba(11, 11, 13, 0.07),
+      0 16px 40px -16px rgba(11, 11, 13, 0.22);
+  }
+
+  /* Denser variant for surfaces that must stay legible over busy content. */
+  .glass-solid {
+    background-image: linear-gradient(
+      158deg,
+      rgba(255, 255, 255, 0.92),
+      rgba(255, 255, 255, 0.76)
+    );
+    backdrop-filter: blur(28px) saturate(200%);
+    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    box-shadow:
+      inset 0 1px 0 0 var(--specular),
+      0 2px 8px -3px rgba(11, 11, 13, 0.08),
+      0 22px 50px -20px rgba(11, 11, 13, 0.26);
+  }
+
+  /* Smoked glass, for panes sitting on dark footage or the ink panel. */
+  .glass-dark {
+    background-image: linear-gradient(
+      158deg,
+      rgba(255, 255, 255, 0.16),
+      rgba(255, 255, 255, 0.06)
+    );
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.32),
+      0 18px 40px -18px rgba(0, 0, 0, 0.55);
+  }
+
+  /* Thin rail — navigation bars and toolbars. */
+  .glass-rail {
+    background-image: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.82),
+      rgba(255, 255, 255, 0.62)
+    );
+    backdrop-filter: blur(26px) saturate(190%);
+    -webkit-backdrop-filter: blur(26px) saturate(190%);
+    box-shadow:
+      inset 0 -1px 0 0 rgba(255, 255, 255, 0.6),
+      0 1px 0 0 rgba(11, 11, 13, 0.06),
+      0 12px 32px -22px rgba(11, 11, 13, 0.35);
+  }
+
+  /*
+   * Specular sweep: a hairline of light along the top edge that fades toward
+   * the corners, the way a real curved glass edge catches a light source.
+   */
+  .specular::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding-top: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(255, 255, 255, 0.95) 22%,
+      rgba(255, 255, 255, 0.95) 78%,
+      transparent
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* --------------------------------------------------------------- pieces */
+
+  .card {
+    @apply glass relative rounded-3xl;
+  }
+
+  .field {
+    @apply w-full rounded-2xl px-3.5 py-2.5 text-[15px] text-ink transition
+           placeholder:text-ink-400 focus:outline-none;
+    background-image: linear-gradient(
+      158deg,
+      rgba(255, 255, 255, 0.86),
+      rgba(255, 255, 255, 0.6)
+    );
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow:
+      inset 0 1px 2px 0 rgba(11, 11, 13, 0.06),
+      inset 0 -1px 0 0 rgba(255, 255, 255, 0.8);
+  }
+
+  .field:focus {
+    border-color: rgba(225, 29, 42, 0.55);
+    box-shadow:
+      inset 0 1px 2px 0 rgba(11, 11, 13, 0.05),
+      0 0 0 4px rgba(225, 29, 42, 0.14);
+  }
+
+  .btn {
+    @apply relative inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-2.5
+           text-sm font-semibold transition active:scale-[0.98]
+           disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn text-white;
+    background-image: linear-gradient(
+      160deg,
+      theme("colors.brand.400"),
+      theme("colors.brand.600")
+    );
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.45),
+      inset 0 -2px 6px 0 rgba(115, 18, 24, 0.35),
+      0 10px 24px -10px rgba(225, 29, 42, 0.7);
+  }
+
+  .btn-primary:hover {
+    background-image: linear-gradient(
+      160deg,
+      theme("colors.brand.500"),
+      theme("colors.brand.700")
+    );
+  }
+
+  .btn-ghost {
+    @apply btn glass text-ink-700;
+  }
+
+  .btn-ghost:hover {
+    background-image: linear-gradient(
+      158deg,
+      rgba(255, 255, 255, 0.9),
+      rgba(255, 255, 255, 0.66)
+    );
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold;
+  }
+
+  /*
+   * The colour field the glass refracts. Fixed so panes reveal different
+   * hues as the page scrolls underneath them.
+   */
+  .aurora {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        42rem 30rem at 12% -6%,
+        rgba(225, 29, 42, 0.18),
+        transparent 60%
+      ),
+      radial-gradient(
+        36rem 26rem at 92% 4%,
+        rgba(245, 197, 66, 0.18),
+        transparent 62%
+      ),
+      radial-gradient(
+        44rem 34rem at 78% 88%,
+        rgba(86, 122, 255, 0.16),
+        transparent 60%
+      ),
+      radial-gradient(
+        32rem 24rem at 20% 96%,
+        rgba(225, 29, 42, 0.1),
+        transparent 60%
+      ),
+      linear-gradient(180deg, #fbfcfe, #f2f4f8);
+  }
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+/* Numeric code inputs: kill spinners, lock tabular figures */
+.code-input {
+  @apply tabular-nums;
+  appearance: textfield;
+}
+.code-input::-webkit-outer-spin-button,
+.code-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Without backdrop-filter the panes would read as flat washes, so opt into
+   opaque fallbacks rather than shipping a muddy half-transparent layout. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass,
+  .glass-solid,
+  .glass-rail,
+  .field {
+    background-image: none;
+    background-color: rgba(255, 255, 255, 0.97);
+  }
+  .glass-dark {
+    background-image: none;
+    background-color: rgba(11, 11, 13, 0.82);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

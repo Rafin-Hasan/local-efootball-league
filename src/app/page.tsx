@@ -1,101 +1,132 @@
-import Image from "next/image";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { Countdown } from "@/components/home/Countdown";
+import { HeroVideo } from "@/components/home/HeroVideo";
+import { RaceSlider, type RaceItem } from "@/components/home/RaceSlider";
+import { RulesBanner } from "@/components/home/RulesBanner";
+import { TopNav } from "@/components/shell/TopNav";
+import { getSession } from "@/lib/auth/session";
+import { getLeagueOverview } from "@/lib/queries";
 
-export default function Home() {
+export default async function HomePage() {
+  const session = await getSession();
+  if (!session) redirect("/login");
+
+  const overview = await getLeagueOverview(session.tournamentId);
+  // Session is signed but its tournament is gone — clear it, do not loop.
+  if (!overview) redirect("/api/auth/signout?reason=stale");
+
+  const { tournament, standings, goldenBoot, goldenBall, clubRace } = overview;
+
+  const bootItems: RaceItem[] = goldenBoot.map((row) => ({
+    id: row.playerId,
+    name: row.name,
+    sub: row.clubName,
+    value: row.goalsFor,
+    unit: "goals",
+    meta: `${row.played} MP`,
+  }));
+
+  const ballItems: RaceItem[] = goldenBall.map((row) => ({
+    id: row.playerId,
+    name: row.name,
+    sub: row.clubName,
+    value: row.rating,
+    unit: "rating",
+    form: row.form,
+  }));
+
+  const clubItems: RaceItem[] = clubRace.map((row) => ({
+    id: row.club,
+    name: row.club,
+    sub:
+      row.members.length > 1
+        ? `${row.members.length} players`
+        : row.members[0],
+    value: row.points,
+    unit: "pts",
+    meta: `${row.won}W ${row.drawn}D ${row.lost}L`,
+  }));
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <>
+      <TopNav session={session} />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      <HeroVideo>
+        <p className="glass-dark chip text-white">
+          {overview.playedCount} of {overview.matchCount} matches played
+        </p>
+
+        <h1 className="display mt-4 max-w-3xl text-5xl leading-[0.92] text-white sm:text-7xl">
+          {tournament.name}
+        </h1>
+
+        <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-white/70 sm:text-base">
+          Every 1v1 counts. Goals feed the Golden Boot, performances feed the
+          Golden Ball, and points climb straight into the team table.
+        </p>
+
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Link href="/fixtures" className="btn-primary">
+            View fixtures
+          </Link>
+          <Link
+            href="/standings"
+            className="glass-dark btn text-white hover:bg-white/20"
           >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            Live standings
+          </Link>
         </div>
+      </HeroVideo>
+
+      <main className="mx-auto w-full max-w-6xl px-6 pb-24">
+        <RulesBanner
+          className="relative z-10 -mt-12"
+          name={tournament.name}
+          startDate={tournament.startDate}
+          endDate={tournament.endDate}
+          rules={tournament.rules}
+          playerCount={overview.playerCount}
+        />
+
+        <div className="card specular mt-10 p-6 sm:p-7">
+          <Countdown endsAt={tournament.endDate.toISOString()} />
+        </div>
+
+        <div className="mt-14 space-y-14">
+          <RaceSlider
+            title="Golden Boot race"
+            subtitle="Most goals scored across all 1v1 fixtures"
+            accent="gold"
+            items={bootItems}
+            emptyMessage="No goals yet. The Golden Boot opens at the first kickoff."
+          />
+
+          <RaceSlider
+            title="Golden Ball race"
+            subtitle="Best overall rating — wins, goal difference and clean sheets, weighted by appearances"
+            accent="brand"
+            items={ballItems}
+            emptyMessage="Ratings appear once players have matches on record."
+          />
+
+          <RaceSlider
+            title="Winner race"
+            subtitle="Team points, aggregated from every player's 1v1 results"
+            accent="ink"
+            items={clubItems}
+            emptyMessage="The team table fills up as results come in."
+          />
+        </div>
+
+        {standings.length > 0 && overview.playedCount === 0 ? (
+          <p className="glass mt-12 rounded-2xl px-5 py-4 text-center text-[13.5px] text-ink-500">
+            {overview.playerCount} players are registered and no matches have
+            been played yet. Every board above is live and will fill in the
+            moment scores are submitted.
+          </p>
+        ) : null}
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+    </>
   );
 }

@@ -1,0 +1,83 @@
+// KickOff OS — Local eFootball League
+// Standings and player ratings are NEVER stored: they are derived from Match rows
+// by the pure reducers in src/lib/engine. This keeps "live recalculation" honest.
+//
+// Connection URLs live in prisma.config.ts (required from Prisma 7).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum TournamentStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
+}
+
+enum MatchStatus {
+  SCHEDULED
+  PLAYED
+}
+
+model Tournament {
+  id        String           @id @default(cuid())
+  name      String
+  startDate DateTime
+  endDate   DateTime
+  status    TournamentStatus @default(ACTIVE)
+  /// Free-form rule lines shown in the home page rules banner.
+  rules     String[]         @default([])
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  players Player[]
+  matches Match[]
+
+  @@index([status])
+}
+
+model Player {
+  id           String   @id @default(cuid())
+  tournamentId String
+  name         String
+  /// The club the player represents in-game. Powers the "winner race" board.
+  clubName     String?
+  /// 3-digit personal PIN, unique within a tournament.
+  accessCode   String
+  /// Unguessable per-player invite code. Namespaces the 3-digit PIN space so a
+  /// bare PIN cannot be brute-forced.
+  inviteCode   String   @unique
+  createdAt    DateTime @default(now())
+
+  tournament  Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  homeMatches Match[]    @relation("HomePlayer")
+  awayMatches Match[]    @relation("AwayPlayer")
+
+  @@unique([tournamentId, accessCode])
+  @@index([tournamentId])
+}
+
+model Match {
+  id           String      @id @default(cuid())
+  tournamentId String
+  round        Int         @default(1)
+  homePlayerId String
+  awayPlayerId String
+  homeGoals    Int?
+  awayGoals    Int?
+  status       MatchStatus @default(SCHEDULED)
+  playedAt     DateTime?
+  createdAt    DateTime    @default(now())
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  homePlayer Player     @relation("HomePlayer", fields: [homePlayerId], references: [id], onDelete: Cascade)
+  awayPlayer Player     @relation("AwayPlayer", fields: [awayPlayerId], references: [id], onDelete: Cascade)
+
+  @@index([tournamentId, status])
+  @@index([tournamentId, round])
+}
