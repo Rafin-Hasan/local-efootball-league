@@ -29,7 +29,7 @@ export function LoginCard({
       <div
         role="tablist"
         aria-label="Sign in as"
-        className="glass mb-6 grid grid-cols-2 gap-1 rounded-2xl p-1"
+        className="panel mb-6 grid grid-cols-2 gap-1 rounded-2xl p-1"
       >
         {TABS.map((item) => {
           const active = tab === item.id;
@@ -46,7 +46,7 @@ export function LoginCard({
                 <motion.span
                   layoutId="login-tab"
                   transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                  className="glass-solid absolute inset-0 rounded-xl"
+                  className="panel-raised absolute inset-0 rounded-xl"
                 />
               ) : null}
               <span

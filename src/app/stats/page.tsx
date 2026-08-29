@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { Reveal } from "@/components/motion/Reveal";
 import { TopNav } from "@/components/shell/TopNav";
 import {
   MatchHistory,
@@ -88,7 +89,7 @@ export default async function StatsPage({
         />
 
         <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-5">
-          <StatTile label="Points" value={row.points} accent="brand" />
+          <StatTile label="Points" value={row.points} accent="aqua" />
           <StatTile
             label="Goals"
             value={row.goalsFor}
@@ -99,23 +100,23 @@ export default async function StatsPage({
           <StatTile
             label="Clean sheets"
             value={row.cleanSheets}
-            accent="emerald"
+            accent="win"
           />
           <StatTile
             label="Goal difference"
             value={`${row.goalDiff > 0 ? "+" : ""}${row.goalDiff}`}
-            accent={row.goalDiff >= 0 ? "emerald" : "brand"}
+            accent={row.goalDiff >= 0 ? "win" : "aqua"}
           />
         </div>
 
-        <div className="mt-5 grid gap-5 lg:grid-cols-2">
+        <Reveal className="mt-5 grid gap-5 lg:grid-cols-2">
           <ResultSplit row={row} />
           <UpcomingList upcoming={upcoming} />
-        </div>
+        </Reveal>
 
-        <div className="mt-5">
+        <Reveal className="mt-5">
           <MatchHistory history={history} />
-        </div>
+        </Reveal>
       </PageShell>
     </>
   );

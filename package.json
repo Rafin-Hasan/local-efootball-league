@@ -13,7 +13,9 @@
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
     "db:seed": "prisma db seed",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\"",
+    "dev:clean": "npm run clean && npm run dev"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.122.0",

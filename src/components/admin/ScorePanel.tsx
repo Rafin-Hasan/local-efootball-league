@@ -44,7 +44,7 @@ export function FixtureGenerator({ hasFixtures }: { hasFixtures: boolean }) {
         <input type="hidden" name="legs" value={legs} />
 
         <div>
-          <div className="mb-1.5 text-[11px] font-bold uppercase tracking-wider text-ink-400">
+          <div className="mb-1.5 strap">
             Format
           </div>
           <div className="flex gap-1.5">
@@ -57,8 +57,8 @@ export function FixtureGenerator({ hasFixtures }: { hasFixtures: boolean }) {
                 className={clsx(
                   "rounded-xl px-3.5 py-2 text-[12.5px] font-semibold transition",
                   legs === value
-                    ? "bg-ink text-white shadow-[0_6px_14px_-8px_rgba(11,11,13,0.8)]"
-                    : "bg-white/55 text-ink-600 ring-1 ring-white/70 hover:bg-white/80",
+                    ? "bg-aqua-500 text-deep-950 shadow-glow"
+                    : "bg-deep-800 text-ink-600 ring-1 ring-white/10 hover:bg-deep-600",
                 )}
               >
                 {value === 1 ? "Single round" : "Home & away"}
@@ -119,15 +119,15 @@ export function ScoreEntry({ rounds }: { rounds: FixtureRound[] }) {
             className={clsx(
               "rounded-xl px-3 py-1.5 text-[12.5px] font-semibold transition",
               round === entry.round
-                ? "bg-ink text-white shadow-[0_6px_14px_-8px_rgba(11,11,13,0.8)]"
-                : "bg-white/55 text-ink-600 ring-1 ring-white/70 hover:bg-white/80",
+                ? "bg-aqua-500 text-deep-950 shadow-glow"
+                : "bg-deep-800 text-ink-600 ring-1 ring-white/10 hover:bg-deep-600",
             )}
           >
             GW{entry.round}
             {entry.played === entry.total && round !== entry.round ? (
               <span
                 aria-hidden
-                className="ml-1.5 inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 align-middle"
+                className="ml-1.5 inline-block h-1.5 w-1.5 rounded-full bg-win align-middle"
               />
             ) : null}
           </button>
@@ -152,8 +152,8 @@ function ScoreRow({ match }: { match: FixtureRound["matches"][number] }) {
   return (
     <div
       className={clsx(
-        "rounded-2xl border border-white/60 bg-white/50 px-3.5 py-3",
-        match.played && "bg-emerald-500/[0.06]",
+        "rounded-2xl border border-white/10 bg-deep-800 px-3.5 py-3",
+        match.played && "bg-win/[0.06]",
       )}
     >
       <div className="flex flex-wrap items-center gap-3">
@@ -171,7 +171,7 @@ function ScoreRow({ match }: { match: FixtureRound["matches"][number] }) {
             defaultValue={match.homeGoals}
             label={`${match.homeName} goals`}
           />
-          <span className="text-ink-300">–</span>
+          <span className="text-ink-400">–</span>
           <ScoreInput
             name="awayGoals"
             defaultValue={match.awayGoals}
@@ -195,7 +195,7 @@ function ScoreRow({ match }: { match: FixtureRound["matches"][number] }) {
             <button
               type="submit"
               title="Clear this result and reopen the fixture"
-              className="rounded-lg px-2 py-1.5 text-[12px] font-semibold text-ink-500 transition hover:bg-brand-500/12 hover:text-brand-600"
+              className="rounded-lg px-2 py-1.5 text-[12px] font-semibold text-ink-500 transition hover:bg-aqua-500/15 hover:text-aqua-300"
             >
               Clear
             </button>
@@ -204,7 +204,7 @@ function ScoreRow({ match }: { match: FixtureRound["matches"][number] }) {
       </div>
 
       {error ? (
-        <p role="alert" className="mt-2 text-[12px] font-medium text-brand-600">
+        <p role="alert" className="mt-2 text-[12px] font-medium text-aqua-300">
           {error}
         </p>
       ) : null}

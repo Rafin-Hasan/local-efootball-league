@@ -77,7 +77,7 @@ export function PortfolioCard({
               cy="64"
               r={radius}
               fill="none"
-              stroke="rgba(11,11,13,0.09)"
+              stroke="rgba(255,255,255,0.10)"
               strokeWidth="10"
             />
             <motion.circle
@@ -102,7 +102,7 @@ export function PortfolioCard({
           </svg>
 
           <div className="absolute grid place-items-center text-center">
-            <span className="display text-4xl leading-none tabular-nums text-ink">
+            <span className="scoreboard text-4xl leading-none tabular-nums text-ink">
               {rating === 0 ? "—" : rating.toFixed(2)}
             </span>
             <span className="text-[10px] font-bold uppercase tracking-wider text-ink-400">
@@ -152,9 +152,9 @@ function RankChip({
   tone: "ink" | "gold" | "brand";
 }) {
   const styles = {
-    ink: "bg-ink/10 text-ink-700 ring-ink-300",
-    gold: "bg-gold-400/22 text-gold-600 ring-gold-400/45",
-    brand: "bg-brand-500/12 text-brand-700 ring-brand-400/40",
+    ink: "bg-aqua-500/15 text-ink-700 ring-white/10",
+    gold: "bg-gold-400/20 text-gold-300 ring-gold-400/45",
+    brand: "bg-aqua-500/15 text-aqua-300 ring-aqua-400/40",
   }[tone];
 
   return (
@@ -167,7 +167,7 @@ function RankChip({
       <span className="text-[11px] font-bold uppercase tracking-wide opacity-75">
         {label}
       </span>
-      <span className="display text-lg leading-none tabular-nums">
+      <span className="scoreboard text-lg leading-none tabular-nums">
         #{value || "—"}
       </span>
       <span className="text-[11px] tabular-nums opacity-60">/{total}</span>
@@ -178,9 +178,9 @@ function RankChip({
 /** Win/draw/loss split as a single stacked bar — a donut would say no more. */
 export function ResultSplit({ row }: { row: PlayerRow }) {
   const segments = [
-    { label: "Won", value: row.won, className: "bg-emerald-500" },
-    { label: "Drawn", value: row.drawn, className: "bg-ink-400" },
-    { label: "Lost", value: row.lost, className: "bg-brand-500" },
+    { label: "Won", value: row.won, className: "bg-win" },
+    { label: "Drawn", value: row.drawn, className: "bg-draw" },
+    { label: "Lost", value: row.lost, className: "bg-loss" },
   ];
 
   return (
@@ -193,7 +193,7 @@ export function ResultSplit({ row }: { row: PlayerRow }) {
         </p>
       ) : (
         <>
-          <div className="mt-4 flex h-3 overflow-hidden rounded-full bg-ink/10">
+          <div className="mt-4 flex h-3 overflow-hidden rounded-full bg-aqua-500/15">
             {segments.map((segment) =>
               segment.value === 0 ? null : (
                 <motion.div
@@ -219,7 +219,7 @@ export function ResultSplit({ row }: { row: PlayerRow }) {
                     {segment.label}
                   </span>
                 </div>
-                <div className="display mt-0.5 text-2xl tabular-nums text-ink">
+                <div className="scoreboard mt-0.5 text-2xl tabular-nums text-ink">
                   {segment.value}
                 </div>
               </li>
@@ -245,21 +245,21 @@ export function MatchHistory({ history }: { history: PlayerMatchRow[] }) {
           submits a score.
         </p>
       ) : (
-        <ol className="mt-4 space-y-2">
+        <ol className="list-virtual mt-4 space-y-2">
           {history.map((match, index) => (
             <motion.li
               key={match.id}
               initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3, delay: Math.min(index, 8) * 0.04 }}
-              className="flex items-center gap-3 rounded-2xl border border-white/60 bg-white/50 px-3.5 py-2.5"
+              className="flex items-center gap-3 rounded-2xl border border-white/10 bg-deep-800 px-3.5 py-2.5"
             >
               <span
                 className={clsx(
                   "grid h-7 w-7 shrink-0 place-items-center rounded-lg text-[11px] font-bold text-white",
-                  match.outcome === "W" && "bg-emerald-500",
-                  match.outcome === "D" && "bg-ink-400",
-                  match.outcome === "L" && "bg-brand-500",
+                  match.outcome === "W" && "bg-win",
+                  match.outcome === "D" && "bg-draw",
+                  match.outcome === "L" && "bg-loss",
                 )}
               >
                 {match.outcome}
@@ -275,9 +275,9 @@ export function MatchHistory({ history }: { history: PlayerMatchRow[] }) {
                 </div>
               </div>
 
-              <span className="shrink-0 display text-xl tabular-nums text-ink">
+              <span className="shrink-0 scoreboard text-xl tabular-nums text-ink">
                 {match.goalsFor}
-                <span className="mx-0.5 text-ink-300">–</span>
+                <span className="mx-0.5 text-ink-400">–</span>
                 {match.goalsAgainst}
               </span>
             </motion.li>
@@ -306,9 +306,9 @@ export function UpcomingList({
           {upcoming.slice(0, 5).map((match) => (
             <li
               key={match.id}
-              className="flex items-center gap-3 rounded-2xl border border-white/60 bg-white/50 px-3.5 py-2.5"
+              className="flex items-center gap-3 rounded-2xl border border-white/10 bg-deep-800 px-3.5 py-2.5"
             >
-              <span className="chip shrink-0 bg-ink/8 text-ink-600 ring-1 ring-ink-200">
+              <span className="chip shrink-0 bg-aqua-500/15 text-ink-600 ring-1 ring-white/10">
                 GW{match.round}
               </span>
               <span className="min-w-0 flex-1 truncate text-[13.5px] font-semibold text-ink">

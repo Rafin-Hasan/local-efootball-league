@@ -17,40 +17,39 @@ export type RaceItem = {
   meta?: string;
 };
 
-type Accent = "gold" | "brand" | "ink";
+type Accent = "gold" | "aqua" | "ink";
 
 const ACCENT: Record<
   Accent,
   { bar: string; ring: string; chip: string; glow: string }
 > = {
   gold: {
-    bar: "bg-gradient-to-r from-gold-400 to-gold-600",
+    bar: "bg-gradient-to-r from-gold-400 to-gold-500",
     ring: "ring-gold-400/40",
-    chip: "bg-gold-400/25 text-gold-600 ring-1 ring-gold-400/40",
+    chip: "bg-gold-400/20 text-gold-300 ring-1 ring-gold-400/40",
     glow: "shadow-[0_10px_30px_-12px_rgba(224,168,30,0.55)]",
   },
-  brand: {
-    bar: "bg-gradient-to-r from-brand-400 to-brand-600",
-    ring: "ring-brand-400/40",
-    chip: "bg-brand-500/15 text-brand-700 ring-1 ring-brand-400/40",
-    glow: "shadow-[0_10px_30px_-12px_rgba(225,29,42,0.55)]",
+  aqua: {
+    bar: "bg-gradient-to-r from-aqua-300 to-aqua-500",
+    ring: "ring-aqua-400/40",
+    chip: "bg-aqua-500/15 text-aqua-300 ring-1 ring-aqua-400/40",
+    glow: "shadow-[0_10px_30px_-12px_rgba(18,190,219,0.55)]",
   },
   ink: {
     bar: "bg-gradient-to-r from-ink-600 to-ink",
-    ring: "ring-ink-300",
-    chip: "bg-ink/10 text-ink-700 ring-1 ring-ink-300",
-    glow: "shadow-[0_10px_30px_-12px_rgba(11,11,13,0.45)]",
+    ring: "ring-white/10",
+    chip: "bg-aqua-500/15 text-ink-700 ring-1 ring-white/10",
+    glow: "shadow-[0_10px_30px_-12px_rgba(255,255,255,0.18)]",
   },
 };
 
-const MEDALS = ["🥇", "🥈", "🥉"];
 const FORM_TITLE = { W: "Win", D: "Draw", L: "Loss" } as const;
 
 export function RaceSlider({
   title,
   subtitle,
   items,
-  accent = "brand",
+  accent = "aqua",
   emptyMessage = "No results yet — the race begins at the first kickoff.",
 }: {
   title: string;
@@ -180,19 +179,19 @@ function RaceCard({
         <div className="flex items-center gap-2">
           <span
             className={clsx(
-              "grid h-7 w-7 place-items-center rounded-lg text-[12px] font-bold tabular-nums",
-              podium ? tone.chip : "bg-white/60 text-ink-500 ring-1 ring-white/70",
+              "scoreboard grid h-7 w-7 place-items-center rounded-md text-[13px]",
+              podium ? tone.chip : "bg-deep-700 text-ink-500 ring-1 ring-white/10",
             )}
           >
-            {podium ? MEDALS[rank - 1] : rank}
+            {rank}
           </span>
           {item.meta ? (
-            <span className="chip bg-white/55 text-ink-500 ring-1 ring-white/70">{item.meta}</span>
+            <span className="chip bg-deep-800 text-ink-500 ring-1 ring-white/10">{item.meta}</span>
           ) : null}
         </div>
 
         <div className="text-right">
-          <div className="display text-3xl leading-none tabular-nums text-ink">
+          <div className="scoreboard text-3xl leading-none tabular-nums text-ink">
             {item.value}
           </div>
           <div className="text-[11px] font-semibold uppercase tracking-wide text-ink-400">
@@ -213,7 +212,7 @@ function RaceCard({
         </p>
       ) : null}
 
-      <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-ink/10 shadow-[inset_0_1px_1px_rgba(11,11,13,0.12)]">
+      <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">
         <motion.div
           initial={{ width: 0 }}
           whileInView={{ width: `${pct}%` }}
@@ -235,9 +234,9 @@ function RaceCard({
               title={FORM_TITLE[result]}
               className={clsx(
                 "grid h-5 w-5 place-items-center rounded text-[10px] font-bold text-white",
-                result === "W" && "bg-emerald-500",
-                result === "D" && "bg-ink-400",
-                result === "L" && "bg-brand-500",
+                result === "W" && "bg-win",
+                result === "D" && "bg-draw",
+                result === "L" && "bg-loss",
               )}
             >
               {result}
@@ -264,7 +263,7 @@ function ArrowButton({
       onClick={onClick}
       disabled={disabled}
       aria-label={direction === "left" ? "Scroll back" : "Scroll forward"}
-      className="glass grid h-8 w-8 place-items-center rounded-xl text-ink-600 transition hover:text-ink disabled:opacity-30"
+      className="panel grid h-8 w-8 place-items-center rounded-xl text-ink-600 transition hover:text-ink disabled:opacity-30"
     >
       <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" aria-hidden>
         <path

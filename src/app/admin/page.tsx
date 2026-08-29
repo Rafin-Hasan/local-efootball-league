@@ -48,9 +48,9 @@ export default async function AdminPage() {
             label="Played"
             value={data.playedCount}
             sub={`of ${data.matchCount}`}
-            accent="emerald"
+            accent="win"
           />
-          <StatTile label="Outstanding" value={remaining} accent="brand" />
+          <StatTile label="Outstanding" value={remaining} accent="aqua" />
         </div>
 
         <div className="space-y-5">

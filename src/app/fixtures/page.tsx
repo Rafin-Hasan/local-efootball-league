@@ -39,10 +39,10 @@ export default async function FixturesPage() {
           <StatTile
             label="Played"
             value={data.playedCount}
-            accent="emerald"
+            accent="win"
             sub={`${data.matchCount === 0 ? 0 : Math.round((data.playedCount / data.matchCount) * 100)}% complete`}
           />
-          <StatTile label="Remaining" value={remaining} accent="brand" />
+          <StatTile label="Remaining" value={remaining} accent="aqua" />
         </div>
 
         <FixtureBoard

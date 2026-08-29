@@ -15,7 +15,7 @@ export function PageHeader({
     <header className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div className="min-w-0">
         {eyebrow ? (
-          <span className="chip bg-brand-500/12 text-brand-700 ring-1 ring-brand-400/35">
+          <span className="chip bg-aqua-500/15 text-aqua-300 ring-1 ring-aqua-400/40">
             {eyebrow}
           </span>
         ) : null}
@@ -35,7 +35,7 @@ export function PageHeader({
 
 export function PageShell({ children }: { children: React.ReactNode }) {
   return (
-    <main className="mx-auto w-full max-w-6xl px-6 pb-24 pt-10">{children}</main>
+    <main className="mx-auto w-full max-w-6xl px-6 pb-28 pt-10 md:pb-24">{children}</main>
   );
 }
 
@@ -48,21 +48,21 @@ export function StatTile({
   label: string;
   value: React.ReactNode;
   sub?: string;
-  accent?: "ink" | "brand" | "gold" | "emerald";
+  accent?: "ink" | "aqua" | "gold" | "win";
 }) {
   const tone = {
     ink: "text-ink",
-    brand: "text-brand-600",
-    gold: "text-gold-600",
-    emerald: "text-emerald-600",
+    aqua: "text-aqua-300",
+    gold: "text-gold-300",
+    win: "text-win",
   }[accent];
 
   return (
     <div className="card specular p-4">
-      <div className="text-[11px] font-bold uppercase tracking-wider text-ink-400">
+      <div className="strap">
         {label}
       </div>
-      <div className={clsx("display mt-1.5 text-4xl tabular-nums", tone)}>
+      <div className={clsx("scoreboard mt-1.5 text-4xl tabular-nums", tone)}>
         {value}
       </div>
       {sub ? (
@@ -92,9 +92,9 @@ export function EmptyState({
 }
 
 const FORM_TONE = {
-  W: "bg-emerald-500",
-  D: "bg-ink-400",
-  L: "bg-brand-500",
+  W: "bg-win",
+  D: "bg-draw",
+  L: "bg-loss",
 } as const;
 
 const FORM_TITLE = { W: "Win", D: "Draw", L: "Loss" } as const;
@@ -108,7 +108,7 @@ export function FormPills({
   size?: "sm" | "md";
 }) {
   if (form.length === 0) {
-    return <span className="text-[12px] text-ink-300">—</span>;
+    return <span className="text-[12px] text-ink-500">—</span>;
   }
   return (
     <span className="inline-flex gap-1" aria-label="Recent form, newest first">
@@ -151,12 +151,12 @@ export function Avatar({
 
   return (
     <span
-      className="grid shrink-0 place-items-center rounded-full font-bold text-white ring-1 ring-white/60"
+      className="grid shrink-0 place-items-center rounded-full font-bold text-white ring-1 ring-white/10"
       style={{
         width: size,
         height: size,
         fontSize: size * 0.34,
-        backgroundImage: `linear-gradient(150deg, hsl(${hue} 62% 58%), hsl(${(hue + 40) % 360} 58% 42%))`,
+        backgroundImage: `linear-gradient(150deg, hsl(${hue} 58% 62%), hsl(${(hue + 40) % 360} 54% 46%))`,
       }}
       aria-hidden
     >

@@ -3,117 +3,165 @@
 @tailwind utilities;
 
 /*
- * Liquid Glass material system.
+ * Liquid Water material system.
  *
- * Glass only reads as glass when there is something behind it to refract, so
- * the page paints a soft colour field first (see `.aurora`) and every surface
- * above it is translucent. Each material carries three cues:
- *   1. blur + saturation  — the frosted refraction itself
- *   2. a bright inset top edge — the specular highlight catching the light
- *   3. a wide, soft drop shadow — the sense of the pane floating above content
+ * The reference is light through deep water: layered translucent surfaces that
+ * refract what floats behind them, a slow caustic drift on the page itself, and
+ * highlights that travel like a swell passing underneath.
+ *
+ * Three rules hold it together:
+ *   1. Glass refracts something. Every translucent surface sits over the
+ *      caustic field or over video, never over flat colour, where a blur is
+ *      just wasted GPU.
+ *   2. Depth is translucency and blur, not drop shadow.
+ *   3. Dense reading surfaces are NOT glass. Liquid Glass is scoped to chrome
+ *      and cards; table bodies get an opaque well so figures stay crisp. That
+ *      is the style's own documented limit, not a compromise.
  */
 
 @layer base {
   :root {
-    --glass-blur: 22px;
-    --glass-saturate: 180%;
-    --specular: rgba(255, 255, 255, 0.92);
-    --rim: rgba(255, 255, 255, 0.62);
+    --edge: rgba(191, 234, 246, 0.14);
+    --edge-strong: rgba(191, 234, 246, 0.24);
+    --rim: rgba(255, 255, 255, 0.1);
+    --blur: 18px;
+    --sat: 150%;
   }
 
   html {
     -webkit-text-size-adjust: 100%;
+    color-scheme: dark;
+    scroll-behavior: smooth;
   }
 
   body {
-    @apply bg-ink-50 text-ink antialiased;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    @apply text-ink antialiased;
+    background-color: #020609;
   }
 
   ::selection {
-    @apply bg-brand-500 text-white;
+    @apply bg-aqua-500/40 text-ink;
   }
 
   :focus-visible {
-    @apply outline-none ring-2 ring-brand-500 ring-offset-2 ring-offset-white;
+    @apply outline-none ring-2 ring-aqua-400 ring-offset-2;
+    --tw-ring-offset-color: theme("colors.deep.900");
+  }
+
+  * {
+    scrollbar-color: theme("colors.deep.500") transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: theme("colors.deep.600");
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
   }
 }
 
 @layer components {
   .display {
-    @apply font-display font-extrabold uppercase italic tracking-tight;
+    @apply font-display font-extrabold uppercase;
+    letter-spacing: -0.01em;
+  }
+
+  .display-slant {
+    @apply display italic;
+  }
+
+  .scoreboard {
+    @apply font-display font-extrabold tabular-nums;
+    letter-spacing: 0.01em;
+  }
+
+  .strap {
+    @apply text-[11px] font-bold uppercase tracking-[0.18em] text-ink-400;
   }
 
   /* ------------------------------------------------------------- materials */
 
-  /* The standard pane. Used for cards, panels and anything that floats. */
-  .glass {
-    background-image: linear-gradient(
-      158deg,
-      rgba(255, 255, 255, 0.74),
-      rgba(255, 255, 255, 0.44)
+  /*
+   * The standard pane. Translucent so the caustic field shows through and
+   * shifts as the page scrolls: that movement is what sells "liquid".
+   */
+  .panel {
+    background: linear-gradient(
+      160deg,
+      rgba(18, 60, 84, 0.42),
+      rgba(6, 19, 31, 0.58)
     );
-    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-    -webkit-backdrop-filter: blur(var(--glass-blur))
-      saturate(var(--glass-saturate));
-    border: 1px solid var(--rim);
+    backdrop-filter: blur(var(--blur)) saturate(var(--sat));
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(var(--sat));
+    border: 1px solid var(--edge);
     box-shadow:
-      inset 0 1px 0 0 var(--specular),
-      inset 0 -1px 0 0 rgba(255, 255, 255, 0.28),
-      0 2px 6px -2px rgba(11, 11, 13, 0.07),
-      0 16px 40px -16px rgba(11, 11, 13, 0.22);
+      inset 0 1px 0 0 var(--rim),
+      0 24px 48px -30px rgba(0, 0, 0, 0.9);
   }
 
-  /* Denser variant for surfaces that must stay legible over busy content. */
-  .glass-solid {
-    background-image: linear-gradient(
-      158deg,
-      rgba(255, 255, 255, 0.92),
-      rgba(255, 255, 255, 0.76)
+  /* One layer nearer the surface: menus, active tabs, anything overlapping. */
+  .panel-raised {
+    background: linear-gradient(
+      160deg,
+      rgba(26, 76, 103, 0.55),
+      rgba(8, 27, 43, 0.7)
     );
-    backdrop-filter: blur(28px) saturate(200%);
-    -webkit-backdrop-filter: blur(28px) saturate(200%);
-    border: 1px solid rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid var(--edge-strong);
     box-shadow:
-      inset 0 1px 0 0 var(--specular),
-      0 2px 8px -3px rgba(11, 11, 13, 0.08),
-      0 22px 50px -20px rgba(11, 11, 13, 0.26);
-  }
-
-  /* Smoked glass, for panes sitting on dark footage or the ink panel. */
-  .glass-dark {
-    background-image: linear-gradient(
-      158deg,
-      rgba(255, 255, 255, 0.16),
-      rgba(255, 255, 255, 0.06)
-    );
-    backdrop-filter: blur(18px) saturate(160%);
-    -webkit-backdrop-filter: blur(18px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    box-shadow:
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.32),
-      0 18px 40px -18px rgba(0, 0, 0, 0.55);
-  }
-
-  /* Thin rail — navigation bars and toolbars. */
-  .glass-rail {
-    background-image: linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.82),
-      rgba(255, 255, 255, 0.62)
-    );
-    backdrop-filter: blur(26px) saturate(190%);
-    -webkit-backdrop-filter: blur(26px) saturate(190%);
-    box-shadow:
-      inset 0 -1px 0 0 rgba(255, 255, 255, 0.6),
-      0 1px 0 0 rgba(11, 11, 13, 0.06),
-      0 12px 32px -22px rgba(11, 11, 13, 0.35);
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.14),
+      0 28px 56px -28px rgba(0, 0, 0, 1);
   }
 
   /*
-   * Specular sweep: a hairline of light along the top edge that fades toward
-   * the corners, the way a real curved glass edge catches a light source.
+   * Opaque well for dense data. Deliberately not glass: a blurred backdrop
+   * behind small tabular figures costs legibility and GPU for no gain.
    */
+  .panel-inset {
+    @apply bg-deep-900/95;
+    border: 1px solid var(--edge);
+  }
+
+  /* Translucent pane for content sitting over video. */
+  .panel-over {
+    background: rgba(4, 12, 20, 0.55);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border: 1px solid var(--edge-strong);
+  }
+
+  .rail {
+    background: rgba(4, 12, 20, 0.72);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border-bottom: 1px solid var(--edge);
+  }
+
+  /* The signature: a 2px aqua rule marking the live or leading thing. */
+  .accent-bar {
+    position: relative;
+  }
+  .accent-bar::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    border-radius: 999px;
+    background: linear-gradient(
+      to bottom,
+      theme("colors.aqua.300"),
+      theme("colors.aqua.600")
+    );
+  }
+
+  /* Refraction highlight along the top edge of a pane. */
   .specular::before {
     content: "";
     position: absolute;
@@ -123,8 +171,8 @@
     background: linear-gradient(
       to right,
       transparent,
-      rgba(255, 255, 255, 0.95) 22%,
-      rgba(255, 255, 255, 0.95) 78%,
+      rgba(191, 234, 246, 0.4) 25%,
+      rgba(191, 234, 246, 0.4) 75%,
       transparent
     );
     -webkit-mask:
@@ -138,107 +186,116 @@
   /* --------------------------------------------------------------- pieces */
 
   .card {
-    @apply glass relative rounded-3xl;
+    @apply panel relative rounded-2xl;
   }
 
   .field {
-    @apply w-full rounded-2xl px-3.5 py-2.5 text-[15px] text-ink transition
+    @apply w-full rounded-xl px-3.5 py-2.5 text-[15px] text-ink transition
            placeholder:text-ink-400 focus:outline-none;
-    background-image: linear-gradient(
-      158deg,
-      rgba(255, 255, 255, 0.86),
-      rgba(255, 255, 255, 0.6)
-    );
-    backdrop-filter: blur(14px) saturate(160%);
-    -webkit-backdrop-filter: blur(14px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    box-shadow:
-      inset 0 1px 2px 0 rgba(11, 11, 13, 0.06),
-      inset 0 -1px 0 0 rgba(255, 255, 255, 0.8);
+    background: rgba(4, 12, 20, 0.6);
+    border: 1px solid var(--edge-strong);
+    box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.5);
   }
 
   .field:focus {
-    border-color: rgba(225, 29, 42, 0.55);
+    border-color: theme("colors.aqua.400");
     box-shadow:
-      inset 0 1px 2px 0 rgba(11, 11, 13, 0.05),
-      0 0 0 4px rgba(225, 29, 42, 0.14);
+      inset 0 1px 3px 0 rgba(0, 0, 0, 0.5),
+      0 0 0 3px rgba(63, 211, 238, 0.22);
   }
 
   .btn {
-    @apply relative inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-2.5
+    @apply relative inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5
            text-sm font-semibold transition active:scale-[0.98]
-           disabled:pointer-events-none disabled:opacity-50;
+           disabled:pointer-events-none disabled:opacity-45;
   }
 
   .btn-primary {
-    @apply btn text-white;
-    background-image: linear-gradient(
-      160deg,
-      theme("colors.brand.400"),
-      theme("colors.brand.600")
+    @apply btn text-deep-950;
+    background: linear-gradient(
+      165deg,
+      theme("colors.aqua.300"),
+      theme("colors.aqua.500")
     );
-    border: 1px solid rgba(255, 255, 255, 0.28);
     box-shadow:
       inset 0 1px 0 0 rgba(255, 255, 255, 0.45),
-      inset 0 -2px 6px 0 rgba(115, 18, 24, 0.35),
-      0 10px 24px -10px rgba(225, 29, 42, 0.7);
+      0 12px 28px -12px rgba(18, 190, 219, 0.85);
   }
 
   .btn-primary:hover {
-    background-image: linear-gradient(
-      160deg,
-      theme("colors.brand.500"),
-      theme("colors.brand.700")
+    background: linear-gradient(
+      165deg,
+      theme("colors.aqua.200"),
+      theme("colors.aqua.400")
     );
   }
 
   .btn-ghost {
-    @apply btn glass text-ink-700;
+    @apply btn text-ink-600;
+    background: rgba(26, 76, 103, 0.35);
+    border: 1px solid var(--edge);
   }
 
   .btn-ghost:hover {
-    background-image: linear-gradient(
-      158deg,
-      rgba(255, 255, 255, 0.9),
-      rgba(255, 255, 255, 0.66)
-    );
+    @apply text-ink;
+    background: rgba(26, 76, 103, 0.55);
   }
 
   .chip {
-    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold;
+    @apply inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[11px]
+           font-bold uppercase tracking-wider;
   }
 
   /*
-   * The colour field the glass refracts. Fixed so panes reveal different
-   * hues as the page scrolls underneath them.
+   * The caustic field: two slow-drifting pools of light over deep water. Only
+   * `transform` and `opacity` animate, so it runs on the compositor and never
+   * triggers layout or paint. `contain: strict` keeps it out of the rest of
+   * the page's layout work.
    */
-  .aurora {
+  .caustics {
     position: fixed;
-    inset: 0;
-    z-index: -1;
+    inset: -20%;
+    z-index: 0;
     pointer-events: none;
+    contain: strict;
+  }
+
+  .caustics::before,
+  .caustics::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    will-change: transform, opacity;
+  }
+
+  .caustics::before {
     background:
       radial-gradient(
-        42rem 30rem at 12% -6%,
-        rgba(225, 29, 42, 0.18),
-        transparent 60%
-      ),
-      radial-gradient(
-        36rem 26rem at 92% 4%,
-        rgba(245, 197, 66, 0.18),
+        40rem 30rem at 18% 12%,
+        rgba(18, 190, 219, 0.2),
         transparent 62%
       ),
       radial-gradient(
-        44rem 34rem at 78% 88%,
-        rgba(86, 122, 255, 0.16),
+        34rem 26rem at 82% 8%,
+        rgba(10, 122, 147, 0.16),
         transparent 60%
+      );
+    animation: caustic 18s ease-in-out infinite;
+  }
+
+  .caustics::after {
+    background:
+      radial-gradient(
+        46rem 34rem at 72% 88%,
+        rgba(20, 56, 78, 0.55),
+        transparent 64%
       ),
       radial-gradient(
-        32rem 24rem at 20% 96%,
-        rgba(225, 29, 42, 0.1),
+        30rem 24rem at 8% 82%,
+        rgba(225, 29, 42, 0.07),
         transparent 60%
-      ),
-      linear-gradient(180deg, #fbfcfe, #f2f4f8);
+      );
+    animation: caustic 26s ease-in-out infinite reverse;
   }
 }
 
@@ -253,23 +310,29 @@
   margin: 0;
 }
 
-/* Without backdrop-filter the panes would read as flat washes, so opt into
-   opaque fallbacks rather than shipping a muddy half-transparent layout. */
+/*
+ * Long lists: let the browser skip layout and paint for offscreen rows.
+ * `contain-intrinsic-size` reserves height so the scrollbar stays honest.
+ */
+.list-virtual > * {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 64px;
+}
+
+/* Without backdrop-filter the panes would be muddy washes, so go opaque. */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .glass,
-  .glass-solid,
-  .glass-rail,
-  .field {
-    background-image: none;
-    background-color: rgba(255, 255, 255, 0.97);
-  }
-  .glass-dark {
-    background-image: none;
-    background-color: rgba(11, 11, 13, 0.82);
+  .panel,
+  .panel-raised,
+  .panel-over,
+  .rail {
+    background: #071726;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   *,
   *::before,
   *::after {

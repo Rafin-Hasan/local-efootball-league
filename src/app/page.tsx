@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Countdown } from "@/components/home/Countdown";
 import { HeroVideo } from "@/components/home/HeroVideo";
 import { RaceSlider, type RaceItem } from "@/components/home/RaceSlider";
+import { Reveal } from "@/components/motion/Reveal";
 import { RulesBanner } from "@/components/home/RulesBanner";
 import { TopNav } from "@/components/shell/TopNav";
 import { getSession } from "@/lib/auth/session";
@@ -53,7 +54,7 @@ export default async function HomePage() {
       <TopNav session={session} />
 
       <HeroVideo>
-        <p className="glass-dark chip text-white">
+        <p className="panel-over chip text-white">
           {overview.playedCount} of {overview.matchCount} matches played
         </p>
 
@@ -72,14 +73,14 @@ export default async function HomePage() {
           </Link>
           <Link
             href="/standings"
-            className="glass-dark btn text-white hover:bg-white/20"
+            className="panel-over btn text-white hover:bg-deep-850"
           >
             Live standings
           </Link>
         </div>
       </HeroVideo>
 
-      <main className="mx-auto w-full max-w-6xl px-6 pb-24">
+      <main className="mx-auto w-full max-w-6xl px-6 pb-28 md:pb-24">
         <RulesBanner
           className="relative z-10 -mt-12"
           name={tournament.name}
@@ -89,11 +90,12 @@ export default async function HomePage() {
           playerCount={overview.playerCount}
         />
 
-        <div className="card specular mt-10 p-6 sm:p-7">
+        <Reveal className="card specular mt-10 p-6 sm:p-7">
           <Countdown endsAt={tournament.endDate.toISOString()} />
-        </div>
+        </Reveal>
 
         <div className="mt-14 space-y-14">
+          <Reveal>
           <RaceSlider
             title="Golden Boot race"
             subtitle="Most goals scored across all 1v1 fixtures"
@@ -101,15 +103,19 @@ export default async function HomePage() {
             items={bootItems}
             emptyMessage="No goals yet. The Golden Boot opens at the first kickoff."
           />
+          </Reveal>
 
+          <Reveal>
           <RaceSlider
             title="Golden Ball race"
             subtitle="Best overall rating — wins, goal difference and clean sheets, weighted by appearances"
-            accent="brand"
+            accent="aqua"
             items={ballItems}
             emptyMessage="Ratings appear once players have matches on record."
           />
+          </Reveal>
 
+          <Reveal>
           <RaceSlider
             title="Winner race"
             subtitle="Team points, aggregated from every player's 1v1 results"
@@ -117,10 +123,11 @@ export default async function HomePage() {
             items={clubItems}
             emptyMessage="The team table fills up as results come in."
           />
+          </Reveal>
         </div>
 
         {standings.length > 0 && overview.playedCount === 0 ? (
-          <p className="glass mt-12 rounded-2xl px-5 py-4 text-center text-[13.5px] text-ink-500">
+          <p className="panel mt-12 rounded-2xl px-5 py-4 text-center text-[13.5px] text-ink-500">
             {overview.playerCount} players are registered and no matches have
             been played yet. Every board above is live and will fill in the
             moment scores are submitted.

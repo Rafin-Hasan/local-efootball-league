@@ -33,13 +33,13 @@ export function RulesBanner({
   return (
     <section
       className={clsx(
-        "glass specular relative overflow-hidden rounded-[1.75rem]",
+        "panel specular relative overflow-hidden rounded-[1.75rem]",
         className,
       )}
     >
       <div className="flex flex-col gap-6 p-6 sm:p-7 lg:flex-row lg:items-start lg:gap-10">
         <div className="lg:w-64 lg:shrink-0">
-          <span className="chip bg-brand-500 text-white">Tournament</span>
+          <span className="chip bg-aqua-500 text-deep-950">Tournament</span>
           <h2 className="display mt-2.5 text-2xl leading-tight text-ink">
             {name}
           </h2>
@@ -71,9 +71,9 @@ export function RulesBanner({
               {rules.map((rule, index) => (
                 <li
                   key={index}
-                  className="flex gap-2.5 rounded-2xl border border-white/60 bg-white/55 px-3.5 py-2.5 text-[13.5px] leading-relaxed text-ink-700 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9)]"
+                  className="flex gap-2.5 rounded-2xl border border-white/10 bg-deep-800 px-3.5 py-2.5 text-[13.5px] leading-relaxed text-ink-700 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9)]"
                 >
-                  <span className="mt-px shrink-0 font-bold tabular-nums text-brand-500">
+                  <span className="mt-px shrink-0 font-bold tabular-nums text-aqua-300">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <span>{rule}</span>

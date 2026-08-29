@@ -44,10 +44,10 @@ export function Countdown({ endsAt }: { endsAt: string }) {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <p className="chip border border-brand-200/70 bg-brand-50/70 text-brand-700 backdrop-blur">
+        <p className="chip border border-brand-200/70 bg-aqua-500/15 text-aqua-300 backdrop-blur">
           <span className="relative flex h-1.5 w-1.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-500 opacity-70" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-500" />
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-aqua-500 opacity-70" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-loss" />
           </span>
           {finished ? "Season complete" : "Season ends in"}
         </p>
@@ -65,11 +65,11 @@ export function Countdown({ endsAt }: { endsAt: string }) {
         {units.map((unit) => (
           <div
             key={unit.label}
-            className="glass specular relative min-w-[4.25rem] rounded-2xl px-3 py-3 text-center"
+            className="panel specular relative min-w-[4.25rem] rounded-2xl px-3 py-3 text-center"
           >
-            <div className="display text-3xl tabular-nums text-ink">
+            <div className="scoreboard text-3xl tabular-nums text-ink">
               {unit.value === null ? (
-                <span className="inline-block h-8 w-10 animate-pulse rounded bg-ink-100 align-middle" />
+                <span className="inline-block h-8 w-10 animate-pulse rounded bg-deep-700 align-middle" />
               ) : (
                 String(unit.value).padStart(2, "0")
               )}

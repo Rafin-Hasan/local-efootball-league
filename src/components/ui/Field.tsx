@@ -19,7 +19,7 @@ export function Label({
       >
         {children}
       </label>
-      {hint ? <span className="text-[12px] text-ink-400">{hint}</span> : null}
+      {hint ? <span className="text-[12px] text-ink-500">{hint}</span> : null}
     </div>
   );
 }
@@ -27,7 +27,7 @@ export function Label({
 export function FieldError({ children }: { children?: string }) {
   if (!children) return null;
   return (
-    <p role="alert" className="mt-1.5 text-[12.5px] font-medium text-brand-600">
+    <p role="alert" className="mt-1.5 text-[12.5px] font-medium text-aqua-300">
       {children}
     </p>
   );
@@ -40,19 +40,42 @@ export function Alert({
   children: React.ReactNode;
   tone?: "error" | "info";
 }) {
+  const error = tone === "error";
+
   return (
     <div
-      role={tone === "error" ? "alert" : "status"}
+      role={error ? "alert" : "status"}
       className={clsx(
-        "flex items-start gap-2.5 rounded-2xl border px-3.5 py-3 text-[13px] font-medium",
-        tone === "error"
-          ? "border-brand-300/60 bg-brand-50/70 text-brand-700 backdrop-blur"
-          : "border-white/70 bg-white/60 text-ink-700 backdrop-blur",
+        "flex items-start gap-2.5 rounded-xl border px-3.5 py-3 text-[13px] font-medium",
+        error
+          ? "border-aqua-400/40 bg-aqua-500/15 text-aqua-300"
+          : "border-white/10 bg-deep-700 text-ink-600",
       )}
     >
-      <span aria-hidden className="mt-px select-none">
-        {tone === "error" ? "⚠" : "ℹ"}
-      </span>
+      {/* Inline SVG rather than a glyph: emoji render differently on every
+          platform and carry no reliable size or colour. */}
+      <svg
+        aria-hidden
+        viewBox="0 0 16 16"
+        className="mt-0.5 h-4 w-4 shrink-0"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      >
+        <circle cx="8" cy="8" r="6.5" />
+        {error ? (
+          <>
+            <path d="M8 4.8v3.8" />
+            <path d="M8 11.1h.01" />
+          </>
+        ) : (
+          <>
+            <path d="M8 7.4v3.8" />
+            <path d="M8 4.9h.01" />
+          </>
+        )}
+      </svg>
       <span>{children}</span>
     </div>
   );

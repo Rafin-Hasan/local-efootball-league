@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { logoutAction } from "@/app/login/actions";
 import { LogoMark, Wordmark } from "@/components/brand/Logo";
+import { BottomNav } from "@/components/shell/BottomNav";
+import { NavLinks } from "@/components/shell/NavLinks";
+import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import type { Session } from "@/lib/auth/session";
 
 const LINKS = [
@@ -23,39 +26,27 @@ export function TopNav({ session }: { session: Session }) {
   const label = session.role === "admin" ? "Admin" : session.name;
 
   return (
-    <header className="glass-rail sticky top-0 z-40">
+    <>
+    <header className="rail sticky top-0 z-40">
+      <ScrollProgress />
       <nav className="mx-auto flex h-16 w-full max-w-6xl items-center gap-6 px-6">
         <Link href="/" className="flex shrink-0 items-center gap-2.5">
           <LogoMark size={32} />
           <Wordmark className="hidden text-lg sm:inline-flex" />
         </Link>
 
-        <ul className="hidden min-w-0 flex-1 items-center gap-1 md:flex">
-          {LINKS.map((link) => (
-            <li key={link.href}>
-              <Link
-                href={link.href}
-                className="rounded-xl px-3 py-2 text-[13.5px] font-semibold text-ink-500 transition hover:bg-white/70 hover:text-ink"
-              >
-                {link.label}
-              </Link>
-            </li>
-          ))}
-          {session.role === "admin" ? (
-            <li>
-              <Link
-                href="/admin"
-                className="rounded-xl px-3 py-2 text-[13.5px] font-semibold text-brand-600 transition hover:bg-white/70"
-              >
-                Admin
-              </Link>
-            </li>
-          ) : null}
-        </ul>
+        <NavLinks
+          links={[
+            ...LINKS,
+            ...(session.role === "admin"
+              ? [{ href: "/admin", label: "Admin", accent: true }]
+              : []),
+          ]}
+        />
 
         <div className="ml-auto flex items-center gap-3">
           <span className="hidden items-center gap-2 sm:flex">
-            <span className="grid h-8 w-8 place-items-center rounded-full bg-ink text-[11px] font-bold text-white">
+            <span className="grid h-8 w-8 place-items-center rounded-full bg-aqua-500 text-[11px] font-bold text-deep-950">
               {session.role === "admin" ? "AD" : initials(session.name)}
             </span>
             <span className="text-[13.5px] font-semibold text-ink-700">
@@ -66,7 +57,7 @@ export function TopNav({ session }: { session: Session }) {
           <form action={logoutAction}>
             <button
               type="submit"
-              className="rounded-xl px-2.5 py-2 text-[13px] font-semibold text-ink-500 transition hover:bg-white/70 hover:text-brand-600"
+              className="rounded-xl px-2.5 py-2 text-[13px] font-semibold text-ink-500 transition hover:bg-deep-700 hover:text-aqua-300"
             >
               Sign out
             </button>
@@ -74,5 +65,7 @@ export function TopNav({ session }: { session: Session }) {
         </div>
       </nav>
     </header>
+    <BottomNav />
+    </>
   );
 }

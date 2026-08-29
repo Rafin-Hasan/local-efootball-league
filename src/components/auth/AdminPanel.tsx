@@ -31,7 +31,7 @@ export function AdminPanel({
       <TournamentSetupForm />
 
       {existing.length > 0 ? (
-        <div className="border-t border-white/60 pt-4">
+        <div className="border-t border-white/10 pt-4">
           <button
             type="button"
             onClick={() => setShowExisting((v) => !v)}
@@ -62,8 +62,8 @@ export function AdminPanel({
                   <button
                     type="submit"
                     className={clsx(
-                      "flex w-full items-center gap-3 rounded-2xl border border-white/60",
-                      "bg-white/50 px-3.5 py-3 text-left transition hover:bg-white/80",
+                      "flex w-full items-center gap-3 rounded-2xl border border-white/10",
+                      "bg-deep-800 px-3.5 py-3 text-left transition hover:bg-deep-600",
                     )}
                   >
                     <span className="min-w-0 flex-1">
@@ -76,7 +76,7 @@ export function AdminPanel({
                         {tournament.startDate} → {tournament.endDate}
                       </span>
                     </span>
-                    <span className="shrink-0 text-[12px] font-semibold text-brand-600">
+                    <span className="shrink-0 text-[12px] font-semibold text-aqua-300">
                       Open
                     </span>
                   </button>

@@ -2,9 +2,9 @@ import Image from "next/image";
 import { clsx } from "@/lib/clsx";
 
 /**
- * The supplied logo is a square PNG on a black field with generous margins.
- * `LogoMark` crops into it inside a dark tile so it reads as intentional on a
- * light page; `Wordmark` is the typographic stand-in for tight UI chrome.
+ * The supplied logo is a square PNG on a black field. On the dark theme that
+ * field is nearly the page colour, so the mark now sits directly on the page
+ * with no tile around it — the crop just trims the PNG's generous margins.
  */
 export function LogoMark({
   className,
@@ -17,10 +17,7 @@ export function LogoMark({
 }) {
   return (
     <span
-      className={clsx(
-        "relative block overflow-hidden rounded-2xl bg-ink ring-1 ring-white/10",
-        className,
-      )}
+      className={clsx("relative block overflow-hidden rounded-xl", className)}
       style={{ width: size, height: size }}
     >
       <Image
@@ -35,24 +32,17 @@ export function LogoMark({
   );
 }
 
-export function Wordmark({
-  className,
-  tone = "dark",
-}: {
-  className?: string;
-  tone?: "dark" | "light";
-}) {
+export function Wordmark({ className }: { className?: string }) {
   return (
     <span
       className={clsx(
-        "display inline-flex items-baseline gap-1.5 leading-none",
-        tone === "light" ? "text-white" : "text-ink",
+        "display-slant inline-flex items-baseline gap-1.5 leading-none text-ink",
         className,
       )}
     >
-      <span className="text-brand-500">#</span>
+      <span className="text-aqua-300">#</span>
       <span>Local</span>
-      <span className="text-brand-500">eFootball</span>
+      <span className="text-aqua-300">eFootball</span>
     </span>
   );
 }

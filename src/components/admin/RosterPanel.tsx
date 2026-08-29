@@ -77,18 +77,18 @@ export function RosterPanel({
 
       <div className="mt-5 overflow-x-auto">
         <table className="w-full min-w-[44rem] border-collapse text-[13.5px]">
-          <thead className="border-b border-white/60">
+          <thead className="border-b border-white/10">
             <tr>
-              <th className="px-2.5 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-ink-400">
+              <th className="px-2.5 py-3 text-left strap">
                 Player
               </th>
-              <th className="px-2.5 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-ink-400">
+              <th className="px-2.5 py-3 text-left strap">
                 Invitation code
               </th>
-              <th className="px-2.5 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-ink-400">
+              <th className="px-2.5 py-3 text-left strap">
                 PIN
               </th>
-              <th className="px-2.5 py-3 text-right text-[11px] font-bold uppercase tracking-wider text-ink-400">
+              <th className="px-2.5 py-3 text-right strap">
                 Actions
               </th>
             </tr>
@@ -97,7 +97,7 @@ export function RosterPanel({
             {roster.map((player) => (
               <tr
                 key={player.id}
-                className="border-b border-white/45 last:border-0 hover:bg-white/45"
+                className="border-b border-white/10 last:border-0 hover:bg-deep-800"
               >
                 <td className="px-2.5 py-3">
                   <div className="flex items-center gap-2.5">
@@ -172,7 +172,7 @@ export function RosterPanel({
 
       <form
         action={addAction}
-        className="mt-6 border-t border-white/60 pt-5"
+        className="mt-6 border-t border-white/10 pt-5"
       >
         <Label htmlFor="new-player">Add a player</Label>
         {addState.error ? (
@@ -226,8 +226,8 @@ function RowButton({
       className={clsx(
         "rounded-lg px-2.5 py-1.5 text-[12px] font-semibold transition",
         danger
-          ? "text-brand-600 hover:bg-brand-500/12"
-          : "text-ink-600 hover:bg-white/70",
+          ? "text-aqua-300 hover:bg-aqua-500/15"
+          : "text-ink-600 hover:bg-deep-700",
       )}
     >
       {children}
@@ -254,7 +254,7 @@ function Secret({
     <div className="flex items-center gap-2">
       <span
         className={clsx(
-          "select-all rounded-lg bg-white/60 px-2 py-1 text-[12.5px] ring-1 ring-white/70",
+          "select-all rounded-lg bg-deep-700 px-2 py-1 text-[12.5px] ring-1 ring-white/10",
           mono ? "font-mono tabular-nums" : "font-mono",
           !revealed && "blur-[5px]",
         )}
@@ -278,13 +278,13 @@ function Secret({
             setCopied(false);
           }
         }}
-        className="text-[11.5px] font-semibold text-ink-500 transition hover:text-brand-600"
+        className="text-[11.5px] font-semibold text-ink-500 transition hover:text-aqua-300"
       >
         {copied ? (
           <motion.span
             initial={{ opacity: 0, y: -3 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-emerald-600"
+            className="text-win"
           >
             Copied
           </motion.span>

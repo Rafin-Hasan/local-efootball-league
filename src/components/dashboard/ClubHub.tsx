@@ -37,8 +37,8 @@ export function ClubSwitcher({
             className={clsx(
               "rounded-xl px-3 py-1.5 text-[12.5px] font-semibold transition",
               isActive
-                ? "bg-ink text-white shadow-[0_6px_14px_-8px_rgba(11,11,13,0.8)]"
-                : "bg-white/55 text-ink-600 ring-1 ring-white/70 hover:bg-white/80",
+                ? "bg-aqua-500 text-deep-950 shadow-glow"
+                : "bg-deep-800 text-ink-600 ring-1 ring-white/10 hover:bg-deep-600",
             )}
           >
             {club.club}
@@ -85,7 +85,7 @@ export function ContributionChart({ members }: { members: RatedPlayer[] }) {
                     {member.points} pts · {share}%
                   </span>
                 </div>
-                <div className="h-2 overflow-hidden rounded-full bg-ink/10 shadow-[inset_0_1px_1px_rgba(11,11,13,0.12)]">
+                <div className="h-2 overflow-hidden rounded-full bg-white/10">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${(member.points / max) * 100}%` }}
@@ -94,7 +94,7 @@ export function ContributionChart({ members }: { members: RatedPlayer[] }) {
                       delay: index * 0.06,
                       ease: [0.16, 1, 0.3, 1],
                     }}
-                    className="h-full rounded-full bg-gradient-to-r from-brand-400 to-brand-600"
+                    className="h-full rounded-full bg-gradient-to-r from-aqua-300 to-aqua-500"
                   />
                 </div>
               </li>
@@ -160,8 +160,8 @@ export function TrendChart({
           >
             <defs>
               <linearGradient id="trend-fill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#E11D2A" stopOpacity="0.28" />
-                <stop offset="100%" stopColor="#E11D2A" stopOpacity="0" />
+                <stop offset="0%" stopColor="#12BEDB" stopOpacity="0.28" />
+                <stop offset="100%" stopColor="#12BEDB" stopOpacity="0" />
               </linearGradient>
             </defs>
 
@@ -169,7 +169,7 @@ export function TrendChart({
             <motion.path
               d={line}
               fill="none"
-              stroke="#E11D2A"
+              stroke="#3FD3EE"
               strokeWidth={2.5}
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -183,8 +183,8 @@ export function TrendChart({
                 cx={c.x}
                 cy={c.y}
                 r={3}
-                fill="#fff"
-                stroke="#E11D2A"
+                fill="#040C14"
+                stroke="#3FD3EE"
                 strokeWidth={2}
               />
             ))}
@@ -211,13 +211,13 @@ export function RosterList({
     <div className="card specular p-5">
       <h3 className="display text-xl text-ink">Active roster</h3>
 
-      <ul className="mt-4 divide-y divide-white/50">
+      <ul className="list-virtual mt-4 divide-y divide-white/10">
         {members.map((member) => (
           <li
             key={member.playerId}
             className={clsx(
               "flex items-center gap-3 py-3 first:pt-0 last:pb-0",
-              member.playerId === highlight && "rounded-xl bg-brand-500/[0.07] px-2",
+              member.playerId === highlight && "rounded-xl bg-aqua-500/15 px-2",
             )}
           >
             <Avatar name={member.name} size={38} />
@@ -226,7 +226,7 @@ export function RosterList({
               <div className="truncate text-[14px] font-semibold text-ink">
                 {member.name}
                 {member.playerId === highlight ? (
-                  <span className="ml-2 text-[11px] font-bold uppercase tracking-wide text-brand-600">
+                  <span className="ml-2 text-[11px] font-bold uppercase tracking-wide text-aqua-300">
                     You
                   </span>
                 ) : null}
@@ -241,7 +241,7 @@ export function RosterList({
             </div>
 
             <div className="shrink-0 text-right">
-              <div className="display text-2xl tabular-nums text-ink">
+              <div className="scoreboard text-2xl tabular-nums text-ink">
                 {member.points}
               </div>
               <div className="text-[10.5px] font-semibold uppercase tracking-wide text-ink-400">

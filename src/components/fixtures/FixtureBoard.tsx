@@ -66,7 +66,7 @@ export function FixtureBoard({
     <div className="space-y-6">
       <div className="card specular flex flex-wrap items-center gap-x-6 gap-y-4 p-4">
         <div className="min-w-0 flex-1">
-          <div className="mb-2 text-[11px] font-bold uppercase tracking-wider text-ink-400">
+          <div className="mb-2 strap">
             Gameweek
           </div>
           <div className="flex flex-wrap gap-1.5">
@@ -88,7 +88,7 @@ export function FixtureBoard({
         </div>
 
         <div>
-          <div className="mb-2 text-[11px] font-bold uppercase tracking-wider text-ink-400">
+          <div className="mb-2 strap">
             Status
           </div>
           <div className="flex gap-1.5">
@@ -105,7 +105,7 @@ export function FixtureBoard({
 
         {highlightPlayer ? (
           <div>
-            <div className="mb-2 text-[11px] font-bold uppercase tracking-wider text-ink-400">
+            <div className="mb-2 strap">
               Scope
             </div>
             <RoundChip
@@ -133,7 +133,7 @@ export function FixtureBoard({
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.22 }}
               >
-                <div className="mb-3 flex items-baseline justify-between gap-4">
+                <div className="accent-bar mb-3 flex items-baseline justify-between gap-4 pl-3">
                   <h2 className="display text-2xl text-ink">
                     Gameweek {entry.round}
                   </h2>
@@ -188,15 +188,15 @@ function RoundChip({
       className={clsx(
         "relative rounded-xl px-3 py-1.5 text-[12.5px] font-semibold transition",
         active
-          ? "bg-ink text-white shadow-[0_6px_14px_-8px_rgba(11,11,13,0.8)]"
-          : "bg-white/55 text-ink-600 ring-1 ring-white/70 hover:bg-white/80",
+          ? "bg-aqua-500 text-deep-950 shadow-glow"
+          : "bg-deep-800 text-ink-600 ring-1 ring-white/10 hover:bg-deep-600",
       )}
     >
       {label}
       {complete && !active ? (
         <span
           aria-hidden
-          className="ml-1.5 inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 align-middle"
+          className="ml-1.5 inline-block h-1.5 w-1.5 rounded-full bg-win align-middle"
         />
       ) : null}
     </button>
@@ -211,7 +211,7 @@ function MatchCard({ match, mine }: { match: FixtureRow; mine: boolean }) {
     <article
       className={clsx(
         "card specular p-4 transition",
-        mine && "ring-1 ring-brand-400/50",
+        mine && "ring-1 ring-aqua-400/40",
       )}
     >
       <div className="mb-3 flex items-center justify-between gap-2">
@@ -219,14 +219,14 @@ function MatchCard({ match, mine }: { match: FixtureRow; mine: boolean }) {
           className={clsx(
             "chip",
             match.played
-              ? "bg-emerald-500/12 text-emerald-700 ring-1 ring-emerald-500/30"
-              : "bg-white/60 text-ink-500 ring-1 ring-white/70",
+              ? "bg-win/15 text-win ring-1 ring-win/30"
+              : "bg-deep-700 text-ink-500 ring-1 ring-white/10",
           )}
         >
           {match.played ? "Full time" : "Scheduled"}
         </span>
         {mine ? (
-          <span className="chip bg-brand-500/12 text-brand-700 ring-1 ring-brand-400/35">
+          <span className="chip bg-aqua-500/15 text-aqua-300 ring-1 ring-aqua-400/40">
             You
           </span>
         ) : null}
@@ -241,13 +241,13 @@ function MatchCard({ match, mine }: { match: FixtureRow; mine: boolean }) {
 
         <div className="text-center">
           {match.played ? (
-            <div className="display text-3xl leading-none tabular-nums text-ink">
+            <div className="scoreboard text-3xl leading-none tabular-nums text-ink">
               {match.homeGoals}
-              <span className="mx-1 text-ink-300">–</span>
+              <span className="mx-1 text-ink-400">–</span>
               {match.awayGoals}
             </div>
           ) : (
-            <div className="display text-lg leading-none text-ink-300">vs</div>
+            <div className="display text-lg leading-none text-ink-400">vs</div>
           )}
         </div>
 

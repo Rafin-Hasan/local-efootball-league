@@ -38,12 +38,13 @@ export default async function LoginPage({
 
   return (
     <main className="grid min-h-dvh lg:grid-cols-[1.05fr_1fr]">
-      {/* Brand panel — dark, so the logo sits on its native black field. */}
-      <aside className="relative hidden overflow-hidden bg-ink px-12 py-14 lg:flex lg:flex-col lg:justify-between">
+      {/* Brand panel — a shade deeper than the page, so the split reads as two
+          surfaces rather than one flat field. */}
+      <aside className="relative hidden overflow-hidden border-r border-white/10 bg-deep-950 px-12 py-14 lg:flex lg:flex-col lg:justify-between">
         <div
           aria-hidden
           className="pointer-events-none absolute -right-24 -top-24 h-[28rem] w-[28rem] rounded-full
-                     bg-brand-500/25 blur-[120px]"
+                     bg-aqua-500/15 blur-[120px]"
         />
         <div
           aria-hidden
@@ -66,7 +67,7 @@ export default async function LoginPage({
           </p>
         </div>
 
-        <dl className="glass-dark relative grid grid-cols-3 gap-6 rounded-2xl px-5 py-5">
+        <dl className="panel-over relative grid grid-cols-3 gap-6 rounded-2xl px-5 py-5">
           {[
             ["Golden Boot", "Top scorer race"],
             ["Golden Ball", "Best player rating"],
@@ -74,7 +75,7 @@ export default async function LoginPage({
           ].map(([term, desc]) => (
             <div key={term}>
               <dt className="display text-[15px] text-white">{term}</dt>
-              <dd className="mt-1 text-[12.5px] leading-snug text-white/45">
+              <dd className="mt-1 text-[12.5px] leading-snug text-white/60">
                 {desc}
               </dd>
             </div>
@@ -89,7 +90,7 @@ export default async function LoginPage({
           <Wordmark className="text-2xl" />
         </div>
 
-        <div className="glass-solid specular relative w-full max-w-[27rem] rounded-[1.75rem] p-7 sm:p-8">
+        <div className="panel-raised specular relative w-full max-w-[27rem] rounded-[1.75rem] p-7 sm:p-8">
           <h2 className="display text-4xl text-ink">Sign in</h2>
           <p className="mt-1.5 text-[14.5px] text-ink-500">
             Join with your player codes, or set up a new tournament.

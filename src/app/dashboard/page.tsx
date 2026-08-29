@@ -7,6 +7,7 @@ import {
   RosterList,
   TrendChart,
 } from "@/components/dashboard/ClubHub";
+import { Reveal } from "@/components/motion/Reveal";
 import { TopNav } from "@/components/shell/TopNav";
 import { EmptyState, PageHeader, PageShell, StatTile } from "@/components/ui/Page";
 import { getSession } from "@/lib/auth/session";
@@ -111,7 +112,7 @@ export default async function DashboardPage({
             sub={`of ${clubs.length} teams`}
             accent="gold"
           />
-          <StatTile label="Points" value={row.points} accent="brand" />
+          <StatTile label="Points" value={row.points} accent="aqua" />
           <StatTile
             label="Record"
             value={
@@ -125,7 +126,7 @@ export default async function DashboardPage({
             label="Goal difference"
             value={`${row.goalDiff > 0 ? "+" : ""}${row.goalDiff}`}
             sub={`${row.goalsFor} for · ${row.goalsAgainst} against`}
-            accent={row.goalDiff >= 0 ? "emerald" : "brand"}
+            accent={row.goalDiff >= 0 ? "win" : "aqua"}
           />
           <StatTile
             label="Avg rating"
@@ -134,19 +135,19 @@ export default async function DashboardPage({
           />
         </div>
 
-        <div className="mt-6 grid gap-5 lg:grid-cols-2">
+        <Reveal className="mt-6 grid gap-5 lg:grid-cols-2">
           <TrendChart points={trend} />
           <ContributionChart members={members} />
-        </div>
+        </Reveal>
 
-        <div className="mt-5">
+        <Reveal className="mt-5">
           <RosterList
             members={members}
             highlight={
               session.role === "player" ? session.playerId : undefined
             }
           />
-        </div>
+        </Reveal>
       </PageShell>
     </>
   );

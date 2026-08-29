@@ -137,7 +137,7 @@ export function TournamentSetupForm() {
       <div>
         <div className="mb-1.5 flex items-baseline justify-between gap-3">
           <span className="text-[13px] font-semibold text-ink-700">Players</span>
-          <span className="text-[12px] text-ink-400">
+          <span className="text-[12px] text-ink-500">
             {filled.length} added · club optional
           </span>
         </div>
@@ -179,7 +179,7 @@ export function TournamentSetupForm() {
                   disabled={rows.length <= 2}
                   aria-label={`Remove player ${index + 1}`}
                   className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-ink-400
-                             transition hover:bg-brand-50 hover:text-brand-600
+                             transition hover:bg-aqua-500/15 hover:text-aqua-300
                              disabled:pointer-events-none disabled:opacity-30"
                 >
                   ×

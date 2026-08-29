@@ -35,7 +35,7 @@ export function StandingsTables({
       <div
         role="tablist"
         aria-label="Standings view"
-        className="glass grid w-full max-w-sm grid-cols-2 gap-1 rounded-2xl p-1"
+        className="panel grid w-full max-w-sm grid-cols-2 gap-1 rounded-2xl p-1"
       >
         {(
           [
@@ -57,7 +57,7 @@ export function StandingsTables({
                 <motion.span
                   layoutId="standings-tab"
                   transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                  className="glass-solid absolute inset-0 rounded-[0.85rem]"
+                  className="panel-raised absolute inset-0 rounded-[0.85rem]"
                 />
               ) : null}
               <span
@@ -108,7 +108,7 @@ function Th({
       scope="col"
       title={title}
       className={clsx(
-        "whitespace-nowrap px-2.5 py-3 text-[11px] font-bold uppercase tracking-wider text-ink-400",
+        "whitespace-nowrap px-2.5 py-3 strap",
         align === "left" ? "text-left" : "text-right",
         wide && "w-full",
       )}
@@ -119,9 +119,9 @@ function Th({
 }
 
 const RANK_TONE = [
-  "bg-gold-400/25 text-gold-600 ring-gold-400/45",
-  "bg-ink-200/70 text-ink-600 ring-ink-300",
-  "bg-brand-500/15 text-brand-700 ring-brand-400/40",
+  "bg-gold-400/20 text-gold-300 ring-gold-400/45",
+  "bg-deep-600/70 text-ink-600 ring-white/10",
+  "bg-aqua-500/15 text-aqua-300 ring-aqua-400/40",
 ];
 
 function RankBadge({ rank }: { rank: number }) {
@@ -131,7 +131,7 @@ function RankBadge({ rank }: { rank: number }) {
         "grid h-7 w-7 place-items-center rounded-lg text-[12px] font-bold tabular-nums ring-1",
         rank <= 3
           ? RANK_TONE[rank - 1]
-          : "bg-white/55 text-ink-500 ring-white/70",
+          : "bg-deep-800 text-ink-500 ring-white/10",
       )}
     >
       {rank}
@@ -149,7 +149,7 @@ function PlayerTable({
   return (
     <TableFrame>
       <table className="w-full min-w-[46rem] border-collapse text-[13.5px]">
-        <thead className="border-b border-white/60">
+        <thead className="border-b border-white/10">
           <tr>
             <Th align="left">#</Th>
             <Th align="left" wide>
@@ -177,8 +177,8 @@ function PlayerTable({
                 layout
                 transition={{ type: "spring", stiffness: 340, damping: 32 }}
                 className={clsx(
-                  "border-b border-white/45 last:border-0 transition",
-                  mine ? "bg-brand-500/[0.07]" : "hover:bg-white/45",
+                  "border-b border-white/10 last:border-0 transition",
+                  mine ? "bg-aqua-500/15" : "hover:bg-deep-800",
                 )}
               >
                 <td className="px-2.5 py-2.5">
@@ -191,7 +191,7 @@ function PlayerTable({
                       <div className="truncate font-semibold text-ink">
                         {row.name}
                         {mine ? (
-                          <span className="ml-2 text-[11px] font-bold uppercase tracking-wide text-brand-600">
+                          <span className="ml-2 text-[11px] font-bold uppercase tracking-wide text-aqua-300">
                             You
                           </span>
                         ) : null}
@@ -213,8 +213,8 @@ function PlayerTable({
                 <Td>
                   <span
                     className={clsx(
-                      row.goalDiff > 0 && "text-emerald-600",
-                      row.goalDiff < 0 && "text-brand-600",
+                      row.goalDiff > 0 && "text-win",
+                      row.goalDiff < 0 && "text-aqua-300",
                     )}
                   >
                     {row.goalDiff > 0 ? "+" : ""}
@@ -231,7 +231,7 @@ function PlayerTable({
                   <FormPills form={row.form} size="sm" />
                 </td>
                 <td className="px-2.5 py-2.5 text-right">
-                  <span className="display text-xl tabular-nums text-ink">
+                  <span className="scoreboard text-xl tabular-nums text-ink">
                     {row.points}
                   </span>
                 </td>
@@ -262,7 +262,7 @@ function ClubTable({
   return (
     <TableFrame>
       <table className="w-full min-w-[38rem] border-collapse text-[13.5px]">
-        <thead className="border-b border-white/60">
+        <thead className="border-b border-white/10">
           <tr>
             <Th align="left">#</Th>
             <Th align="left" wide>
@@ -287,8 +287,8 @@ function ClubTable({
                 layout
                 transition={{ type: "spring", stiffness: 340, damping: 32 }}
                 className={clsx(
-                  "border-b border-white/45 last:border-0 transition",
-                  mine ? "bg-brand-500/[0.07]" : "hover:bg-white/45",
+                  "border-b border-white/10 last:border-0 transition",
+                  mine ? "bg-aqua-500/15" : "hover:bg-deep-800",
                 )}
               >
                 <td className="px-2.5 py-2.5">
@@ -316,8 +316,8 @@ function ClubTable({
                 <Td>
                   <span
                     className={clsx(
-                      row.goalDiff > 0 && "text-emerald-600",
-                      row.goalDiff < 0 && "text-brand-600",
+                      row.goalDiff > 0 && "text-win",
+                      row.goalDiff < 0 && "text-aqua-300",
                     )}
                   >
                     {row.goalDiff > 0 ? "+" : ""}
@@ -325,7 +325,7 @@ function ClubTable({
                   </span>
                 </Td>
                 <td className="px-2.5 py-2.5 text-right">
-                  <span className="display text-xl tabular-nums text-ink">
+                  <span className="scoreboard text-xl tabular-nums text-ink">
                     {row.points}
                   </span>
                 </td>

@@ -1,9 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow_Condensed, Inter } from "next/font/google";
+import { Barlow, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+/* Sports/Fitness pairing: Barlow Condensed for impact, Barlow for body.
+   One family, two widths — headlines and text stay visibly related. */
+const body = Barlow({
   subsets: ["latin"],
+  weight: ["400", "600", "700"],
   variable: "--font-sans",
   display: "swap",
 });
@@ -26,7 +29,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#E11D2A",
+  themeColor: "#040C14",
+  colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
 };
@@ -37,11 +41,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${display.variable}`}>
+    <html lang="en" className={`${body.variable} ${display.variable}`}>
       <body className="min-h-dvh">
-        {/* Colour field the glass panes refract; see .aurora in globals.css. */}
-        <div className="aurora" aria-hidden />
-        {children}
+        {/* Light through deep water; see .caustics in globals.css. */}
+        <div className="caustics" aria-hidden />
+        <div className="relative z-10">{children}</div>
       </body>
     </html>
   );

@@ -5,7 +5,8 @@ where every head-to-head result feeds three live races: the Golden Boot (goals),
 the Golden Ball (player rating) and the Winner Race (team points).
 
 Built with Next.js 14 (App Router), TypeScript, Tailwind, Framer Motion and
-Prisma on Postgres, dressed in an iOS-style **Liquid Glass** light theme.
+Prisma on Postgres, in a **Liquid Water** theme: layered translucent surfaces
+over a slow caustic drift, with scroll-linked motion throughout.
 
 ---
 
@@ -118,22 +119,95 @@ npm run test    # 38 tests over the engine
 
 ---
 
-## The Liquid Glass theme
+## The Liquid Water theme
 
-Glass only reads as glass when there is something behind it to refract, so the
-page paints a fixed colour field (`.aurora`) and every surface above it is
-translucent. Each material in `src/app/globals.css` carries three cues:
+The reference is light through deep water: layered translucent surfaces that
+refract what floats behind them, a slow caustic drift on the page itself, and
+highlights that travel like a swell passing underneath.
 
-1. `backdrop-filter` blur **and** saturation boost — the frosted refraction
-2. a bright inset top edge — the specular highlight catching the light
-3. a wide, soft drop shadow — the sense of a pane floating above content
+Three rules hold it together:
 
-Materials: `.glass` (standard pane), `.glass-solid` (denser, for text-heavy
-surfaces), `.glass-dark` (smoked, for panes over video), `.glass-rail`
-(navigation), and `.specular` (a hairline of light along the top edge).
+1. **Glass refracts something.** Every translucent surface sits over the caustic
+   field or over video, never over flat colour — a blur with nothing behind it
+   is wasted GPU.
+2. **Depth is translucency and blur, not drop shadow.**
+3. **Dense reading surfaces are not glass.** `.panel-inset` is deliberately
+   opaque: a blurred backdrop behind small tabular figures costs legibility and
+   GPU for no gain. That is the Liquid Glass style's own documented limit, so
+   the standings and score tables opt out of it.
 
-There is an opaque `@supports not (backdrop-filter:...)` fallback, so browsers
-without backdrop filters get solid panels rather than a muddy wash.
+Two colour ramps do the work and cannot be confused: `deep` (950 → 500) is only
+ever a background, `ink` (DEFAULT → 200) is only ever text. Accents are split by
+meaning rather than taste — `aqua` carries every interactive and positive
+signal, and `brand` red is reserved for the mark itself plus live and losing
+states. Red on cyan is a complementary pair, so the few red things stay loud
+precisely because everything else is cool.
+
+Materials in `src/app/globals.css`: `.panel`, `.panel-raised` (overlapping),
+`.panel-inset` (opaque data wells), `.panel-over` (content on video), `.rail`,
+`.accent-bar` and `.specular`. The `.caustics` layer animates `transform` and
+`opacity` only, under `contain: strict`, so it runs on the compositor and never
+triggers layout or paint.
+
+**Type** is the Barlow family at two widths — Barlow Condensed for display,
+Barlow for body. `.display` is upright, because italic tabular figures are hard
+to scan in the standings; slant is opt-in via `.display-slant`, and
+`.scoreboard` handles figures.
+
+Direction and font pairing came from the `ui-ux-pro-max` skill (Liquid Glass
+style, Sports/Fitness pairing). The palette is a composed dark variant — the
+skill's water palettes are all light-mode, so it is not a database match.
+
+---
+
+## Motion
+
+Scroll behaviour lives in `src/components/motion/`, so timings are decided once
+rather than per page.
+
+- **`Reveal` / `RevealGroup` / `RevealItem`** — `whileInView` reveals. The
+  viewport threshold is deliberately tiny (`amount: 0.05`): a tall block must
+  reveal as soon as any part of it enters, or it can sit invisible on a short
+  page. Content that never appears is worse than no animation.
+- **`ScrollProgress`** — a hairline in the nav rail driven by `useScroll` into a
+  `useSpring`. It writes to a motion value, so scrolling never re-renders React.
+- **Hero parallax** — `useScroll` + `useTransform` drift the footage and fade the
+  headline as you leave the hero.
+
+Every one of these reads `useReducedMotion()` and collapses to a plain fade (or
+nothing) when the user has asked for less motion. Only `transform` and `opacity`
+are animated, so they stay on the compositor.
+
+---
+
+## Performance notes
+
+The hero video was the whole story. It shipped as 720x720 at 60fps and
+**8.1 Mbps** — 7.9 MB for an eight-second muted loop that is heavily scrimmed
+anyway.
+
+| | Before | After |
+| --- | --- | --- |
+| `hero.mp4` | 7,933 KB | 524 KB |
+| `public/media` total | 8.1 MB | 944 KB |
+
+Re-encoded to 30fps at CRF 30 with `+faststart`. A VP9 WebM was also tried and
+came out **larger** (1,115 KB) than the H.264, so it was dropped rather than
+shipped for its own sake.
+
+The video is also no longer on the critical path: `preload="none"` plus a
+deferred `src` means the 84 KB poster paints first and the file only starts
+fetching once an `IntersectionObserver` says the hero is near the viewport — so
+it never loads at all on the other six pages.
+
+Other measures: `optimizePackageImports` for `framer-motion`,
+`content-visibility` on the long match-history and roster lists (`.list-virtual`),
+and one fewer font weight.
+
+Honest caveat: **First Load JS grew ~6 KB** (152 KB vs 146 KB) for the scroll
+hooks. `LazyMotion` was evaluated and rejected — `layout`/`layoutId` animations
+need the `domMax` feature bundle, which saves roughly 3 KB over the full import
+and is not worth degrading the animation for.
 
 ---
 
@@ -147,9 +221,15 @@ without backdrop filters get solid panels rather than a muddy wash.
 | `npm run db:migrate` | Create and apply a migration |
 | `npm run db:seed` | Reset and reseed the demo league |
 | `npm run db:studio` | Prisma Studio |
+| `npm run clean` | Delete `.next` |
+| `npm run dev:clean` | Clean, then start the dev server |
 
-> Do not run `npm run build` while `npm run dev` is running — the production
-> build overwrites `.next` and the dev server then fails to resolve chunks.
+> Do not run `npm run build` while `npm run dev` is running. The production
+> build overwrites `.next`, and the running dev server then cannot resolve
+> chunks for routes it has not already compiled: the page you are on keeps
+> working while every link to another route fails with
+> `Failed to fetch RSC payload`. If that happens, stop the dev server and run
+> `npm run dev:clean`.
 
 ---
 

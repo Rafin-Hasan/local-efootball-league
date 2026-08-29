@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { Reveal } from "@/components/motion/Reveal";
 import { TopNav } from "@/components/shell/TopNav";
 import { StandingsTables } from "@/components/standings/StandingsTables";
 import { PageHeader, PageShell, StatTile } from "@/components/ui/Page";
@@ -59,17 +60,18 @@ export default async function StandingsPage() {
             sub={
               topScorer?.goalsFor ? `${topScorer.goalsFor} goals` : "No goals yet"
             }
-            accent="brand"
+            accent="aqua"
           />
           <StatTile label="Players" value={data.playerCount} />
           <StatTile
             label="Matches played"
             value={data.playedCount}
             sub={`of ${data.matchCount}`}
-            accent="emerald"
+            accent="win"
           />
         </div>
 
+        <Reveal>
         <StandingsTables
           players={rated}
           clubs={data.clubRace}
@@ -78,6 +80,7 @@ export default async function StandingsPage() {
           }
           highlightClub={myClub}
         />
+        </Reveal>
       </PageShell>
     </>
   );
