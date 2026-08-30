@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { FixtureBoard } from "@/components/fixtures/FixtureBoard";
-import { TopNav } from "@/components/shell/TopNav";
 import { PageHeader, PageShell, StatTile } from "@/components/ui/Page";
 import { getSession } from "@/lib/auth/session";
 import { getFixtureRounds } from "@/lib/queries";
@@ -25,7 +24,6 @@ export default async function FixturesPage() {
 
   return (
     <>
-      <TopNav session={session} />
       <PageShell>
         <PageHeader
           eyebrow="Schedule"
@@ -42,7 +40,7 @@ export default async function FixturesPage() {
             accent="win"
             sub={`${data.matchCount === 0 ? 0 : Math.round((data.playedCount / data.matchCount) * 100)}% complete`}
           />
-          <StatTile label="Remaining" value={remaining} accent="aqua" />
+          <StatTile label="Remaining" value={remaining} accent="brand" />
         </div>
 
         <FixtureBoard

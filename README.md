@@ -5,8 +5,9 @@ where every head-to-head result feeds three live races: the Golden Boot (goals),
 the Golden Ball (player rating) and the Winner Race (team points).
 
 Built with Next.js 14 (App Router), TypeScript, Tailwind, Framer Motion and
-Prisma on Postgres, in a **Liquid Water** theme: layered translucent surfaces
-over a slow caustic drift, with scroll-linked motion throughout.
+Prisma on Postgres, in a **red-and-black** liquid-glass theme: layered
+translucent surfaces over a slow ember drift, with scroll-linked motion
+throughout.
 
 ---
 
@@ -19,7 +20,7 @@ over a slow caustic drift, with scroll-linked motion throughout.
 | `/fixtures` | Every 1v1 grouped by gameweek, filterable by round, status and "my matches" |
 | `/standings` | Live player table and team table, with ratings, form and animated reordering |
 | `/dashboard` | Team hub — KPIs, cumulative points trend, per-player contribution, roster |
-| `/stats` | Personal portfolio — rating dial, ranks, results split, match history, next fixtures |
+| `/stats` | Player dossier — tilt card, six-axis radar vs the league, earned honours, clubmates |
 | `/admin` | AI copilot, fixture generator, score entry, roster and access codes |
 
 All eight routes are built. Players see their own team and their own stats; admins
@@ -107,6 +108,13 @@ recalculation" honest rather than a cache-invalidation story.
   non-destructive: played results are kept and never duplicated, only the
   scheduled tail is rebuilt, so the admin can press the button as often as they
   like.
+- **`profile.ts`** — the player dossier. Six radar axes (attack, defence, win
+  rate, margin, clean sheets, form), each paired with a league average computed
+  by the identical formula, plus honours derived only from what the record
+  proves: hat-tricks, wins by two clear goals, unbeaten runs, podium places.
+  There is no shot, possession, minute or assist data in this schema, so there
+  are deliberately no attributes, xG or match timelines — an absent stat beats
+  an invented one.
 - **`ratings.ts`** — the Golden Ball score. Win rate, goal difference, clean
   sheets and scoring rate combine into a 0–10 rating, then shrink toward the
   5.0 baseline based on appearances, so one lucky win cannot outrank a strong
@@ -114,16 +122,16 @@ recalculation" honest rather than a cache-invalidation story.
   cannot dominate.
 
 ```bash
-npm run test    # 38 tests over the engine
+npm run test    # 59 tests over the engine
 ```
 
 ---
 
-## The Liquid Water theme
+## The red-and-black theme
 
-The reference is light through deep water: layered translucent surfaces that
-refract what floats behind them, a slow caustic drift on the page itself, and
-highlights that travel like a swell passing underneath.
+The logo's own palette: red on black. The reference is a dark room lit red —
+layered translucent surfaces over warm charcoal, a slow ember drift on the page
+itself, and bright highlights along the top edge of every pane.
 
 Three rules hold it together:
 
@@ -131,23 +139,52 @@ Three rules hold it together:
    field or over video, never over flat colour — a blur with nothing behind it
    is wasted GPU.
 2. **Depth is translucency and blur, not drop shadow.**
-3. **Dense reading surfaces are not glass.** `.panel-inset` is deliberately
-   opaque: a blurred backdrop behind small tabular figures costs legibility and
-   GPU for no gain. That is the Liquid Glass style's own documented limit, so
-   the standings and score tables opt out of it.
+3. **Blur depth decreases as surfaces nest.** A `.well` inside a `.panel` is
+   already sitting on blurred output, so it uses 10px rather than 18px —
+   stacking two heavy blurs costs frames and looks no glassier. Elements that
+   repeat per row (rank badges, form pills) use translucency with no
+   `backdrop-filter` at all, for the same reason.
 
 Two colour ramps do the work and cannot be confused: `deep` (950 → 500) is only
-ever a background, `ink` (DEFAULT → 200) is only ever text. Accents are split by
-meaning rather than taste — `aqua` carries every interactive and positive
-signal, and `brand` red is reserved for the mark itself plus live and losing
-states. Red on cyan is a complementary pair, so the few red things stay loud
-precisely because everything else is cool.
+ever a background, `ink` (DEFAULT → 200) is only ever text. Both are neutral
+with a faint warm bias, so the blacks read warm rather than blue.
 
-Materials in `src/app/globals.css`: `.panel`, `.panel-raised` (overlapping),
-`.panel-inset` (opaque data wells), `.panel-over` (content on video), `.rail`,
-`.accent-bar` and `.specular`. The `.caustics` layer animates `transform` and
-`opacity` only, under `contain: strict`, so it runs on the compositor and never
-triggers layout or paint.
+`brand` red is the primary interactive colour — buttons, active states, focus,
+links. That creates one problem worth naming: red traditionally also means
+*defeat*. Using one red for "press this" and "you lost" makes both ambiguous, so
+results keep a separate scale — `win` green, `draw` grey, and `loss` a muted
+rose deliberately duller and greyer than any brand red. **Action is vivid;
+outcome is muted.**
+
+Because red is darker than cyan at the same lightness step, every filled accent
+carries **white** text rather than near-black: white on `brand-500` is 4.76:1,
+where near-black on it was 3.2:1. The primary button also does not lighten on
+hover — lightening a red fill would drop white text to 3.2:1 — so hover
+intensifies the glow instead and contrast holds.
+
+`gold` survives only where the word is literal: the Golden Boot and Golden Ball
+races. It is not a decorative third colour.
+
+Every surface is one of the materials in `src/app/globals.css` — there are no
+ad-hoc background colours left in the components:
+
+| Material | Role |
+| --- | --- |
+| `.panel` / `.card` | standard pane, 18px blur |
+| `.panel-raised` | one layer nearer: menus, active tabs |
+| `.panel-over` | panes sitting on video |
+| `.rail` | navigation chrome — frosted *and* glossy, with a gold underlight |
+| `.modal` | the most elevated surface: the sign-in window |
+| `.well` | nested item inside a panel, 10px blur |
+| `.control` | inactive pill: filter chips, gameweek selectors, tags |
+
+Plus `.gloss`, `.accent-bar` and `.specular` for highlights. The `.caustics`
+layer animates `transform` and `opacity` only, under `contain: strict`, so it
+runs on the compositor and never triggers layout or paint.
+
+There are two fallbacks: an opaque `@supports` path for browsers without
+`backdrop-filter`, and a `prefers-reduced-transparency` path that drops every
+blur and paints the materials opaque with the depth order intact.
 
 **Type** is the Barlow family at two widths — Barlow Condensed for display,
 Barlow for body. `.display` is upright, because italic tabular figures are hard
@@ -224,6 +261,27 @@ and is not worth degrading the animation for.
 | `npm run clean` | Delete `.next` |
 | `npm run dev:clean` | Clean, then start the dev server |
 
+## Why dev feels slow
+
+`next dev` compiles each route the first time you visit it. Measured on this
+project, that is **4–5 seconds** for the first hit on `/standings` or `/admin`,
+then 37–57ms for every hit after. A production build has no such step:
+
+| | first visit | repeat |
+| --- | --- | --- |
+| `npm run dev` | 4,174–4,965 ms | 37–57 ms |
+| `npm run build && npm run start` | 45–100 ms | 28–56 ms |
+
+Client-side navigation in production measures **42–56 ms** per page. Next also
+disables `<Link>` prefetching in dev, so every navigation there is a cold
+fetch, where production prefetches links as they enter the viewport.
+
+If you are judging how the app actually performs, measure a production build.
+
+---
+
+## Notes
+
 > Do not run `npm run build` while `npm run dev` is running. The production
 > build overwrites `.next`, and the running dev server then cannot resolve
 > chunks for routes it has not already compiled: the page you are on keeps
@@ -247,10 +305,6 @@ Without a key the panel falls back to `src/lib/ai/mock.ts`, which builds a
 templated briefing from the same figures and labels itself **Offline** in the
 UI. That keeps the page working on a machine with no key without pretending a
 model wrote it. The route is admin-only and rate-limited.
-
----
-
-## Notes
 
 - `jose` triggers two Edge Runtime warnings at build time (`CompressionStream`,
   `DecompressionStream`). They come from the JWE decrypt path, which this app

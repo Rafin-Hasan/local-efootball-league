@@ -111,7 +111,7 @@ export function Copilot() {
               "chip ring-1",
               mode === "live"
                 ? "bg-win/15 text-win ring-win/30"
-                : "bg-deep-700 text-ink-500 ring-white/10",
+                : "control text-ink-500",
             )}
           >
             {mode === "live" ? "Live · Claude" : "Offline · templated"}
@@ -129,7 +129,7 @@ export function Copilot() {
               setQuestion(preset.question);
               void ask(preset.question, preset.id);
             }}
-            className="rounded-xl bg-deep-800 px-3 py-1.5 text-[12.5px] font-semibold text-ink-600 ring-1 ring-white/10 transition hover:bg-deep-600 disabled:opacity-50"
+            className="control rounded-xl px-3 py-1.5 text-[12.5px] font-semibold text-ink-600 ring-1 ring-white/10 transition hover:bg-white/[0.10] disabled:opacity-50"
           >
             {preset.label}
           </button>
@@ -161,7 +161,7 @@ export function Copilot() {
       </form>
 
       {error ? (
-        <p role="alert" className="mt-3 text-[13px] font-medium text-aqua-300">
+        <p role="alert" className="mt-3 text-[13px] font-medium text-brand-300">
           {error}
         </p>
       ) : null}
@@ -170,12 +170,12 @@ export function Copilot() {
         <motion.div
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-4 rounded-2xl border border-white/10 bg-deep-800 px-4 py-3.5"
+          className="mt-4 well rounded-2xl px-4 py-3.5"
         >
           <p className="whitespace-pre-wrap text-[14px] leading-relaxed text-ink-700">
             {answer}
             {pending ? (
-              <span className="ml-0.5 inline-block h-4 w-[2px] animate-pulse bg-aqua-500 align-text-bottom" />
+              <span className="ml-0.5 inline-block h-4 w-[2px] animate-pulse bg-brand-500 align-text-bottom" />
             ) : null}
           </p>
         </motion.div>

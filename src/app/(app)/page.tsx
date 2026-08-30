@@ -5,7 +5,6 @@ import { HeroVideo } from "@/components/home/HeroVideo";
 import { RaceSlider, type RaceItem } from "@/components/home/RaceSlider";
 import { Reveal } from "@/components/motion/Reveal";
 import { RulesBanner } from "@/components/home/RulesBanner";
-import { TopNav } from "@/components/shell/TopNav";
 import { getSession } from "@/lib/auth/session";
 import { getLeagueOverview } from "@/lib/queries";
 
@@ -51,7 +50,6 @@ export default async function HomePage() {
 
   return (
     <>
-      <TopNav session={session} />
 
       <HeroVideo>
         <p className="panel-over chip text-white">
@@ -73,7 +71,7 @@ export default async function HomePage() {
           </Link>
           <Link
             href="/standings"
-            className="panel-over btn text-white hover:bg-deep-850"
+            className="panel-over btn text-white transition hover:bg-white/[0.10]"
           >
             Live standings
           </Link>
@@ -109,7 +107,7 @@ export default async function HomePage() {
           <RaceSlider
             title="Golden Ball race"
             subtitle="Best overall rating — wins, goal difference and clean sheets, weighted by appearances"
-            accent="aqua"
+            accent="brand"
             items={ballItems}
             emptyMessage="Ratings appear once players have matches on record."
           />

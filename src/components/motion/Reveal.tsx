@@ -59,11 +59,17 @@ export function RevealGroup({
   className,
   stagger = 0.04,
   as = "div",
+  trigger = "view",
 }: {
   children: React.ReactNode;
   className?: string;
   stagger?: number;
   as?: "div" | "ul" | "ol" | "section";
+  /**
+   * "view" waits until scrolled into view. "mount" plays immediately — use it
+   * for panels that appear already on screen, such as tab content.
+   */
+  trigger?: "view" | "mount";
 }) {
   const reduced = useReducedMotion();
   const Tag = motion[as];
@@ -78,14 +84,13 @@ export function RevealGroup({
     },
   };
 
+  const play =
+    trigger === "mount"
+      ? { animate: "show" as const }
+      : { whileInView: "show" as const, viewport: { once: true, amount: 0.05 } };
+
   return (
-    <Tag
-      className={className}
-      variants={variants}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, amount: 0.05 }}
-    >
+    <Tag className={className} variants={variants} initial="hidden" {...play}>
       {children}
     </Tag>
   );

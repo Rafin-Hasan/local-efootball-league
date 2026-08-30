@@ -188,8 +188,8 @@ function RoundChip({
       className={clsx(
         "relative rounded-xl px-3 py-1.5 text-[12.5px] font-semibold transition",
         active
-          ? "bg-aqua-500 text-deep-950 shadow-glow"
-          : "bg-deep-800 text-ink-600 ring-1 ring-white/10 hover:bg-deep-600",
+          ? "bg-brand-500 text-white shadow-glow"
+          : "control text-ink-600",
       )}
     >
       {label}
@@ -211,7 +211,7 @@ function MatchCard({ match, mine }: { match: FixtureRow; mine: boolean }) {
     <article
       className={clsx(
         "card specular p-4 transition",
-        mine && "ring-1 ring-aqua-400/40",
+        mine && "ring-1 ring-brand-400/40",
       )}
     >
       <div className="mb-3 flex items-center justify-between gap-2">
@@ -220,13 +220,13 @@ function MatchCard({ match, mine }: { match: FixtureRow; mine: boolean }) {
             "chip",
             match.played
               ? "bg-win/15 text-win ring-1 ring-win/30"
-              : "bg-deep-700 text-ink-500 ring-1 ring-white/10",
+              : "control text-ink-500",
           )}
         >
           {match.played ? "Full time" : "Scheduled"}
         </span>
         {mine ? (
-          <span className="chip bg-aqua-500/15 text-aqua-300 ring-1 ring-aqua-400/40">
+          <span className="chip bg-brand-500/15 text-brand-300 ring-1 ring-brand-400/40">
             You
           </span>
         ) : null}

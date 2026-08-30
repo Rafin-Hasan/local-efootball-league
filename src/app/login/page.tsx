@@ -7,6 +7,12 @@ import { db } from "@/lib/db";
 
 export const metadata: Metadata = { title: "Sign in" };
 
+const RACES = [
+  ["Golden Boot", "Top scorer"],
+  ["Golden Ball", "Best rating"],
+  ["Winner Race", "Team points"],
+];
+
 export default async function LoginPage({
   searchParams,
 }: {
@@ -37,74 +43,61 @@ export default async function LoginPage({
   }));
 
   return (
-    <main className="grid min-h-dvh lg:grid-cols-[1.05fr_1fr]">
-      {/* Brand panel — a shade deeper than the page, so the split reads as two
-          surfaces rather than one flat field. */}
-      <aside className="relative hidden overflow-hidden border-r border-white/10 bg-deep-950 px-12 py-14 lg:flex lg:flex-col lg:justify-between">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -right-24 -top-24 h-[28rem] w-[28rem] rounded-full
-                     bg-aqua-500/15 blur-[120px]"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -bottom-32 -left-16 h-[24rem] w-[24rem] rounded-full
-                     bg-brand-700/20 blur-[110px]"
-        />
+    /*
+     * A single centred modal rather than the previous two-column split. The
+     * window floats free in an ambient field: light pools behind it, the
+     * caustic layer from the root layout drifts underneath, and the glass
+     * refracts both. One column also means one reading path, which is what
+     * keeps a sign-in screen from feeling cluttered.
+     */
+    <main className="relative grid min-h-dvh place-items-center overflow-hidden px-4 py-10">
+      {/* Ambient lighting. Wide, soft and low-opacity — these read as light in
+          the room, not as coloured shapes. */}
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div className="absolute left-1/2 top-[-18%] h-[34rem] w-[34rem] -translate-x-1/2 rounded-full bg-brand-500/12 blur-[130px]" />
+        <div className="absolute bottom-[-20%] left-[8%] h-[26rem] w-[26rem] rounded-full bg-brand-700/14 blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[6%] h-[22rem] w-[22rem] rounded-full bg-gold-500/8 blur-[110px]" />
+      </div>
 
-        <LogoMark size={112} priority />
-
-        <div className="relative max-w-md">
-          <h1 className="display text-6xl leading-[0.92] text-white">
-            Run your league
-            <br />
-            <span className="text-brand-500">like a pro.</span>
-          </h1>
-          <p className="mt-5 text-[15px] leading-relaxed text-white/60">
-            KickOff OS is the operating system for the Local eFootball League —
-            fixtures, live standings, player ratings and an AI match copilot in
-            one control room.
-          </p>
+      <div className="relative w-full max-w-[29rem]">
+        {/* Brand, above the window rather than beside it */}
+        <div className="mb-7 flex flex-col items-center gap-3">
+          <LogoMark size={64} priority />
+          <Wordmark className="text-xl" />
         </div>
 
-        <dl className="panel-over relative grid grid-cols-3 gap-6 rounded-2xl px-5 py-5">
-          {[
-            ["Golden Boot", "Top scorer race"],
-            ["Golden Ball", "Best player rating"],
-            ["Winner Race", "Team points table"],
-          ].map(([term, desc]) => (
-            <div key={term}>
-              <dt className="display text-[15px] text-white">{term}</dt>
-              <dd className="mt-1 text-[12.5px] leading-snug text-white/60">
-                {desc}
-              </dd>
+        <div className="modal gloss relative overflow-hidden rounded-[1.9rem] p-6 sm:p-8">
+          <div className="relative z-10">
+            <h1 className="display text-4xl leading-none text-ink">Sign in</h1>
+            <p className="mt-2 text-[14.5px] leading-relaxed text-ink-500">
+              Join with your player codes, or set up a new tournament.
+            </p>
+
+            <div className="mt-7">
+              <LoginCard
+                inviteCode={searchParams.invite}
+                existing={existing}
+                initialTab={searchParams.tab === "admin" ? "admin" : "player"}
+              />
             </div>
-          ))}
-        </dl>
-      </aside>
-
-      {/* Form panel */}
-      <section className="flex flex-col items-center justify-center px-6 py-12 sm:px-10">
-        <div className="mb-9 flex flex-col items-center gap-3 lg:hidden">
-          <LogoMark size={72} priority />
-          <Wordmark className="text-2xl" />
-        </div>
-
-        <div className="panel-raised specular relative w-full max-w-[27rem] rounded-[1.75rem] p-7 sm:p-8">
-          <h2 className="display text-4xl text-ink">Sign in</h2>
-          <p className="mt-1.5 text-[14.5px] text-ink-500">
-            Join with your player codes, or set up a new tournament.
-          </p>
-
-          <div className="mt-7">
-            <LoginCard
-              inviteCode={searchParams.invite}
-              existing={existing}
-              initialTab={searchParams.tab === "admin" ? "admin" : "player"}
-            />
           </div>
         </div>
-      </section>
+
+        {/* The three races, as a slim strip under the window: enough to say what
+            the league is, without turning the screen into a landing page. */}
+        <ul className="mt-6 grid grid-cols-3 gap-2">
+          {RACES.map(([term, desc]) => (
+            <li key={term} className="control rounded-2xl px-3 py-2.5 text-center">
+              <span className="display block text-[13px] leading-tight text-ink">
+                {term}
+              </span>
+              <span className="mt-0.5 block text-[11px] leading-tight text-ink-500">
+                {desc}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </main>
   );
 }

@@ -27,7 +27,7 @@ export function Label({
 export function FieldError({ children }: { children?: string }) {
   if (!children) return null;
   return (
-    <p role="alert" className="mt-1.5 text-[12.5px] font-medium text-aqua-300">
+    <p role="alert" className="mt-1.5 text-[12.5px] font-medium text-brand-300">
       {children}
     </p>
   );
@@ -48,8 +48,8 @@ export function Alert({
       className={clsx(
         "flex items-start gap-2.5 rounded-xl border px-3.5 py-3 text-[13px] font-medium",
         error
-          ? "border-aqua-400/40 bg-aqua-500/15 text-aqua-300"
-          : "border-white/10 bg-deep-700 text-ink-600",
+          ? "border-brand-400/40 bg-brand-500/15 text-brand-300"
+          : "border-white/10 bg-white/[0.06] text-ink-600",
       )}
     >
       {/* Inline SVG rather than a glyph: emoji render differently on every

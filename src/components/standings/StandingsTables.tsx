@@ -120,8 +120,8 @@ function Th({
 
 const RANK_TONE = [
   "bg-gold-400/20 text-gold-300 ring-gold-400/45",
-  "bg-deep-600/70 text-ink-600 ring-white/10",
-  "bg-aqua-500/15 text-aqua-300 ring-aqua-400/40",
+  "bg-white/[0.14] text-ink-600 ring-white/25",
+  "bg-brand-500/15 text-brand-300 ring-brand-400/40",
 ];
 
 function RankBadge({ rank }: { rank: number }) {
@@ -131,7 +131,7 @@ function RankBadge({ rank }: { rank: number }) {
         "grid h-7 w-7 place-items-center rounded-lg text-[12px] font-bold tabular-nums ring-1",
         rank <= 3
           ? RANK_TONE[rank - 1]
-          : "bg-deep-800 text-ink-500 ring-white/10",
+          : "bg-white/[0.06] text-ink-500 ring-white/10",
       )}
     >
       {rank}
@@ -178,7 +178,7 @@ function PlayerTable({
                 transition={{ type: "spring", stiffness: 340, damping: 32 }}
                 className={clsx(
                   "border-b border-white/10 last:border-0 transition",
-                  mine ? "bg-aqua-500/15" : "hover:bg-deep-800",
+                  mine ? "bg-brand-500/15" : "hover:bg-white/[0.06]",
                 )}
               >
                 <td className="px-2.5 py-2.5">
@@ -191,7 +191,7 @@ function PlayerTable({
                       <div className="truncate font-semibold text-ink">
                         {row.name}
                         {mine ? (
-                          <span className="ml-2 text-[11px] font-bold uppercase tracking-wide text-aqua-300">
+                          <span className="ml-2 text-[11px] font-bold uppercase tracking-wide text-brand-300">
                             You
                           </span>
                         ) : null}
@@ -214,7 +214,7 @@ function PlayerTable({
                   <span
                     className={clsx(
                       row.goalDiff > 0 && "text-win",
-                      row.goalDiff < 0 && "text-aqua-300",
+                      row.goalDiff < 0 && "text-brand-300",
                     )}
                   >
                     {row.goalDiff > 0 ? "+" : ""}
@@ -288,7 +288,7 @@ function ClubTable({
                 transition={{ type: "spring", stiffness: 340, damping: 32 }}
                 className={clsx(
                   "border-b border-white/10 last:border-0 transition",
-                  mine ? "bg-aqua-500/15" : "hover:bg-deep-800",
+                  mine ? "bg-brand-500/15" : "hover:bg-white/[0.06]",
                 )}
               >
                 <td className="px-2.5 py-2.5">
@@ -317,7 +317,7 @@ function ClubTable({
                   <span
                     className={clsx(
                       row.goalDiff > 0 && "text-win",
-                      row.goalDiff < 0 && "text-aqua-300",
+                      row.goalDiff < 0 && "text-brand-300",
                     )}
                   >
                     {row.goalDiff > 0 ? "+" : ""}

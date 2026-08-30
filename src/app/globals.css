@@ -3,26 +3,39 @@
 @tailwind utilities;
 
 /*
- * Liquid Water material system.
+ * Red-and-black material system.
  *
- * The reference is light through deep water: layered translucent surfaces that
- * refract what floats behind them, a slow caustic drift on the page itself, and
- * highlights that travel like a swell passing underneath.
+ * The reference is a dark room lit red: layered translucent surfaces over warm
+ * charcoal, a slow ember drift on the page itself, and bright highlights along
+ * the top edge of every pane.
+ *
+ * Every surface in the app is one of these materials — there are no ad-hoc
+ * background colours left in the components.
+ *
+ *   .panel / .card   standard pane, 18px blur
+ *   .panel-raised    one layer nearer the surface: menus, active tabs
+ *   .panel-over      panes sitting on video
+ *   .rail            navigation chrome, frosted and glossy
+ *   .modal           the most elevated surface: the sign-in window
+ *   .well            nested item inside a panel, 10px blur
+ *   .control         inactive pill: filter chips, gameweek selectors, tags
  *
  * Three rules hold it together:
  *   1. Glass refracts something. Every translucent surface sits over the
  *      caustic field or over video, never over flat colour, where a blur is
  *      just wasted GPU.
  *   2. Depth is translucency and blur, not drop shadow.
- *   3. Dense reading surfaces are NOT glass. Liquid Glass is scoped to chrome
- *      and cards; table bodies get an opaque well so figures stay crisp. That
- *      is the style's own documented limit, not a compromise.
+ *   3. Blur depth decreases as surfaces nest. A .well inside a .panel is
+ *      already sitting on blurred output, so it uses 10px rather than 18px;
+ *      stacking two heavy blurs costs frames and looks no glassier. Elements
+ *      that repeat per row — rank badges, form pills — use translucency with
+ *      no backdrop-filter at all, for the same reason.
  */
 
 @layer base {
   :root {
-    --edge: rgba(191, 234, 246, 0.14);
-    --edge-strong: rgba(191, 234, 246, 0.24);
+    --edge: rgba(255, 210, 214, 0.13);
+    --edge-strong: rgba(255, 210, 214, 0.22);
     --rim: rgba(255, 255, 255, 0.1);
     --blur: 18px;
     --sat: 150%;
@@ -36,15 +49,15 @@
 
   body {
     @apply text-ink antialiased;
-    background-color: #020609;
+    background-color: #070506;
   }
 
   ::selection {
-    @apply bg-aqua-500/40 text-ink;
+    @apply bg-brand-500/40 text-ink;
   }
 
   :focus-visible {
-    @apply outline-none ring-2 ring-aqua-400 ring-offset-2;
+    @apply outline-none ring-2 ring-brand-400 ring-offset-2;
     --tw-ring-offset-color: theme("colors.deep.900");
   }
 
@@ -92,8 +105,8 @@
   .panel {
     background: linear-gradient(
       160deg,
-      rgba(18, 60, 84, 0.42),
-      rgba(6, 19, 31, 0.58)
+      rgba(58, 30, 33, 0.46),
+      rgba(10, 8, 9, 0.62)
     );
     backdrop-filter: blur(var(--blur)) saturate(var(--sat));
     -webkit-backdrop-filter: blur(var(--blur)) saturate(var(--sat));
@@ -107,8 +120,8 @@
   .panel-raised {
     background: linear-gradient(
       160deg,
-      rgba(26, 76, 103, 0.55),
-      rgba(8, 27, 43, 0.7)
+      rgba(74, 38, 42, 0.58),
+      rgba(14, 11, 12, 0.72)
     );
     backdrop-filter: blur(24px) saturate(160%);
     -webkit-backdrop-filter: blur(24px) saturate(160%);
@@ -119,30 +132,131 @@
   }
 
   /*
-   * Opaque well for dense data. Deliberately not glass: a blurred backdrop
-   * behind small tabular figures costs legibility and GPU for no gain.
+   * Nested surface: a list item or sub-card floating inside a .panel. Lighter
+   * blur than the parent because it is already sitting on blurred output —
+   * stacking two heavy blurs costs frames without looking any glassier.
    */
-  .panel-inset {
-    @apply bg-deep-900/95;
+  .well {
+    background: linear-gradient(
+      160deg,
+      rgba(74, 38, 42, 0.30),
+      rgba(10, 8, 9, 0.46)
+    );
+    backdrop-filter: blur(10px) saturate(135%);
+    -webkit-backdrop-filter: blur(10px) saturate(135%);
     border: 1px solid var(--edge);
+    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+  }
+
+  .well-hover {
+    transition: background 180ms ease, border-color 180ms ease;
+  }
+  .well-hover:hover {
+    background: linear-gradient(
+      160deg,
+      rgba(86, 44, 49, 0.46),
+      rgba(16, 12, 13, 0.58)
+    );
+    border-color: var(--edge-strong);
+  }
+
+  /*
+   * Glass pill for inactive controls — filter chips, gameweek selectors,
+   * status tags. The active state is the solid red gradient, so these must
+   * stay clearly recessed against it.
+   */
+  .control {
+    background: rgba(58, 30, 33, 0.34);
+    backdrop-filter: blur(10px) saturate(140%);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+    border: 1px solid var(--edge);
+    transition: background 180ms ease, border-color 180ms ease;
+  }
+  .control:hover {
+    background: rgba(86, 44, 49, 0.52);
+    border-color: var(--edge-strong);
   }
 
   /* Translucent pane for content sitting over video. */
   .panel-over {
-    background: rgba(4, 12, 20, 0.55);
+    background: rgba(8, 6, 7, 0.58);
     backdrop-filter: blur(20px) saturate(150%);
     -webkit-backdrop-filter: blur(20px) saturate(150%);
     border: 1px solid var(--edge-strong);
   }
 
+  /*
+   * Navigation chrome: a floating capsule of frosted *and* glossy glass.
+   *
+   * Where .panel is a matte frost, this is polished — a pale pastel tint lifted
+   * off the page, a bright gloss along the top edge, a warm gold underlight,
+   * and a soft ambient bloom instead of a hard drop shadow. `brightness` in the
+   * backdrop filter is what makes it read as lit rather than merely see-through.
+   */
   .rail {
-    background: rgba(4, 12, 20, 0.72);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-    border-bottom: 1px solid var(--edge);
+    background: linear-gradient(
+      180deg,
+      rgba(255, 226, 229, 0.16),
+      rgba(255, 180, 186, 0.08) 46%,
+      rgba(14, 10, 11, 0.36)
+    );
+    backdrop-filter: blur(28px) saturate(180%) brightness(1.08);
+    -webkit-backdrop-filter: blur(28px) saturate(180%) brightness(1.08);
+    border: 1px solid rgba(255, 226, 229, 0.20);
+    box-shadow:
+      /* gloss: a bright lip along the top */
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.42),
+      /* a hint of gold warming the underside */
+      inset 0 -1px 0 0 rgba(245, 197, 66, 0.16),
+      /* soft ambient depth, deliberately not a harsh shadow */
+      0 18px 44px -24px rgba(0, 0, 0, 0.7),
+      0 0 42px -14px rgba(255, 90, 103, 0.20);
   }
 
-  /* The signature: a 2px aqua rule marking the live or leading thing. */
+  /*
+   * Modal: the most elevated surface in the app, for a pane that floats free of
+   * any page content — currently the sign-in window.
+   *
+   * Deeper frost than .panel and a brighter gloss than .rail, because nothing
+   * sits above it to establish scale. Depth comes from a wide, very soft shadow
+   * plus a red bloom; a tight dark shadow would read as harsh and flatten it.
+   */
+  .modal {
+    background: linear-gradient(
+      165deg,
+      rgba(255, 222, 225, 0.15),
+      rgba(86, 42, 47, 0.26) 38%,
+      rgba(10, 8, 9, 0.66)
+    );
+    backdrop-filter: blur(34px) saturate(175%) brightness(1.06);
+    -webkit-backdrop-filter: blur(34px) saturate(175%) brightness(1.06);
+    border: 1px solid rgba(255, 226, 229, 0.22);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.45),
+      inset 0 -1px 0 0 rgba(245, 197, 66, 0.14),
+      0 40px 90px -40px rgba(0, 0, 0, 0.9),
+      0 0 70px -22px rgba(225, 29, 42, 0.30);
+  }
+
+  /*
+   * The glossy sweep: a soft diagonal highlight across the upper half, the way
+   * light sits on polished glass. Purely decorative and non-interactive.
+   */
+  .gloss::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 42% 0;
+    border-radius: inherit;
+    background: linear-gradient(
+      168deg,
+      rgba(255, 255, 255, 0.2) 0%,
+      rgba(255, 255, 255, 0.07) 38%,
+      transparent 72%
+    );
+    pointer-events: none;
+  }
+
+  /* The signature: a 2px red rule marking the live or leading thing. */
   .accent-bar {
     position: relative;
   }
@@ -156,8 +270,8 @@
     border-radius: 999px;
     background: linear-gradient(
       to bottom,
-      theme("colors.aqua.300"),
-      theme("colors.aqua.600")
+      theme("colors.brand.300"),
+      theme("colors.brand.600")
     );
   }
 
@@ -171,8 +285,8 @@
     background: linear-gradient(
       to right,
       transparent,
-      rgba(191, 234, 246, 0.4) 25%,
-      rgba(191, 234, 246, 0.4) 75%,
+      rgba(255, 226, 229, 0.38) 25%,
+      rgba(255, 226, 229, 0.38) 75%,
       transparent
     );
     -webkit-mask:
@@ -192,16 +306,16 @@
   .field {
     @apply w-full rounded-xl px-3.5 py-2.5 text-[15px] text-ink transition
            placeholder:text-ink-400 focus:outline-none;
-    background: rgba(4, 12, 20, 0.6);
+    background: rgba(8, 6, 7, 0.62);
     border: 1px solid var(--edge-strong);
     box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.5);
   }
 
   .field:focus {
-    border-color: theme("colors.aqua.400");
+    border-color: theme("colors.brand.400");
     box-shadow:
       inset 0 1px 3px 0 rgba(0, 0, 0, 0.5),
-      0 0 0 3px rgba(63, 211, 238, 0.22);
+      0 0 0 3px rgba(255, 90, 103, 0.24);
   }
 
   .btn {
@@ -211,34 +325,32 @@
   }
 
   .btn-primary {
-    @apply btn text-deep-950;
+    @apply btn text-white;
     background: linear-gradient(
       165deg,
-      theme("colors.aqua.300"),
-      theme("colors.aqua.500")
+      theme("colors.brand.500"),
+      theme("colors.brand.700")
     );
     box-shadow:
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.45),
-      0 12px 28px -12px rgba(18, 190, 219, 0.85);
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.28),
+      0 12px 28px -12px rgba(225, 29, 42, 0.85);
   }
 
   .btn-primary:hover {
-    background: linear-gradient(
-      165deg,
-      theme("colors.aqua.200"),
-      theme("colors.aqua.400")
-    );
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.45),
+      0 14px 34px -10px rgba(225, 29, 42, 1);
   }
 
   .btn-ghost {
     @apply btn text-ink-600;
-    background: rgba(26, 76, 103, 0.35);
+    background: rgba(74, 38, 42, 0.38);
     border: 1px solid var(--edge);
   }
 
   .btn-ghost:hover {
     @apply text-ink;
-    background: rgba(26, 76, 103, 0.55);
+    background: rgba(74, 38, 42, 0.58);
   }
 
   .chip {
@@ -272,12 +384,12 @@
     background:
       radial-gradient(
         40rem 30rem at 18% 12%,
-        rgba(18, 190, 219, 0.2),
+        rgba(225, 29, 42, 0.16),
         transparent 62%
       ),
       radial-gradient(
         34rem 26rem at 82% 8%,
-        rgba(10, 122, 147, 0.16),
+        rgba(120, 16, 24, 0.16),
         transparent 60%
       );
     animation: caustic 18s ease-in-out infinite;
@@ -287,12 +399,12 @@
     background:
       radial-gradient(
         46rem 34rem at 72% 88%,
-        rgba(20, 56, 78, 0.55),
+        rgba(52, 20, 24, 0.55),
         transparent 64%
       ),
       radial-gradient(
         30rem 24rem at 8% 82%,
-        rgba(225, 29, 42, 0.07),
+        rgba(245, 197, 66, 0.05),
         transparent 60%
       );
     animation: caustic 26s ease-in-out infinite reverse;
@@ -320,12 +432,67 @@
 }
 
 /* Without backdrop-filter the panes would be muddy washes, so go opaque. */
+/* Without backdrop-filter the panes would be muddy washes, so go opaque. */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .panel,
+  .panel-over {
+    background: #151112;
+  }
+  .panel-raised {
+    background: #20191A;
+  }
+  .well,
+  .control {
+    background: #1B1516;
+  }
+  /* Chrome stays lifted: lighter than any content surface beneath it. */
+  .rail {
+    background: #2A2022;
+  }
+  .modal {
+    background: #241C1E;
+  }
+  .gloss::after {
+    display: none;
+  }
+}
+
+/*
+ * Some people find translucency itself hard to read through, independently of
+ * motion. Honour that: drop every backdrop-filter and paint the materials
+ * opaque, keeping the depth order intact so the hierarchy still reads.
+ */
+@media (prefers-reduced-transparency: reduce) {
   .panel,
   .panel-raised,
   .panel-over,
+  .rail,
+  .modal,
+  .well,
+  .control {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .panel,
+  .panel-over {
+    background: #151112;
+  }
+  .panel-raised {
+    background: #20191A;
+  }
+  .well,
+  .control {
+    background: #1B1516;
+  }
   .rail {
-    background: #071726;
+    background: #2A2022;
+  }
+  .modal {
+    background: #241C1E;
+  }
+  .gloss::after,
+  .caustics {
+    display: none;
   }
 }
 

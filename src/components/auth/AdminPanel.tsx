@@ -63,7 +63,7 @@ export function AdminPanel({
                     type="submit"
                     className={clsx(
                       "flex w-full items-center gap-3 rounded-2xl border border-white/10",
-                      "bg-deep-800 px-3.5 py-3 text-left transition hover:bg-deep-600",
+                      "control well-hover px-3.5 py-3 text-left",
                     )}
                   >
                     <span className="min-w-0 flex-1">
@@ -76,7 +76,7 @@ export function AdminPanel({
                         {tournament.startDate} → {tournament.endDate}
                       </span>
                     </span>
-                    <span className="shrink-0 text-[12px] font-semibold text-aqua-300">
+                    <span className="shrink-0 text-[12px] font-semibold text-brand-300">
                       Open
                     </span>
                   </button>

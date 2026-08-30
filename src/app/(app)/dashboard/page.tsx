@@ -8,7 +8,6 @@ import {
   TrendChart,
 } from "@/components/dashboard/ClubHub";
 import { Reveal } from "@/components/motion/Reveal";
-import { TopNav } from "@/components/shell/TopNav";
 import { EmptyState, PageHeader, PageShell, StatTile } from "@/components/ui/Page";
 import { getSession } from "@/lib/auth/session";
 import { isPlayed } from "@/lib/engine/standings";
@@ -43,7 +42,6 @@ export default async function DashboardPage({
   if (!data.club || !data.row) {
     return (
       <>
-        <TopNav session={session} />
         <PageShell>
           <PageHeader eyebrow="Team hub" title="Dashboard" />
           <EmptyState title="No teams to show">
@@ -90,7 +88,6 @@ export default async function DashboardPage({
 
   return (
     <>
-      <TopNav session={session} />
       <PageShell>
         <PageHeader
           eyebrow="Team hub"
@@ -112,7 +109,7 @@ export default async function DashboardPage({
             sub={`of ${clubs.length} teams`}
             accent="gold"
           />
-          <StatTile label="Points" value={row.points} accent="aqua" />
+          <StatTile label="Points" value={row.points} accent="brand" />
           <StatTile
             label="Record"
             value={
@@ -126,7 +123,7 @@ export default async function DashboardPage({
             label="Goal difference"
             value={`${row.goalDiff > 0 ? "+" : ""}${row.goalDiff}`}
             sub={`${row.goalsFor} for · ${row.goalsAgainst} against`}
-            accent={row.goalDiff >= 0 ? "win" : "aqua"}
+            accent={row.goalDiff >= 0 ? "win" : "brand"}
           />
           <StatTile
             label="Avg rating"

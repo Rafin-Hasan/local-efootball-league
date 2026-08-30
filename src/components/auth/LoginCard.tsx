@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { clsx } from "@/lib/clsx";
 import { AdminPanel, type ExistingTournament } from "./AdminPanel";
 import { PlayerPanel } from "./PlayerPanel";
@@ -29,7 +29,7 @@ export function LoginCard({
       <div
         role="tablist"
         aria-label="Sign in as"
-        className="panel mb-6 grid grid-cols-2 gap-1 rounded-2xl p-1"
+        className="mb-6 grid grid-cols-2 gap-1 rounded-2xl border border-white/10 bg-deep-950/45 p-1"
       >
         {TABS.map((item) => {
           const active = tab === item.id;
@@ -46,13 +46,15 @@ export function LoginCard({
                 <motion.span
                   layoutId="login-tab"
                   transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                  className="panel-raised absolute inset-0 rounded-xl"
+                  className="absolute inset-0 rounded-xl border border-white/25
+                             bg-gradient-to-b from-white/[0.22] to-white/[0.06]
+                             shadow-[inset_0_1px_0_0_rgba(255,255,255,0.45),inset_0_-1px_0_0_rgba(245,197,66,0.28)]"
                 />
               ) : null}
               <span
                 className={clsx(
                   "relative z-10",
-                  active ? "text-ink" : "text-ink-500 hover:text-ink-700",
+                  active ? "text-ink" : "text-ink-600 hover:text-ink",
                 )}
               >
                 {item.label}
@@ -62,21 +64,18 @@ export function LoginCard({
         })}
       </div>
 
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={tab}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -6 }}
-          transition={{ duration: 0.18 }}
-        >
-          {tab === "player" ? (
-            <PlayerPanel inviteCode={inviteCode} />
-          ) : (
-            <AdminPanel existing={existing} />
-          )}
-        </motion.div>
-      </AnimatePresence>
+      <motion.div
+        key={tab}
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+      >
+        {tab === "player" ? (
+          <PlayerPanel inviteCode={inviteCode} />
+        ) : (
+          <AdminPanel existing={existing} />
+        )}
+      </motion.div>
     </div>
   );
 }

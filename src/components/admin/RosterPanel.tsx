@@ -8,7 +8,7 @@ import {
   removePlayerAction,
   rotateCodesAction,
   type AdminActionState,
-} from "@/app/admin/actions";
+} from "@/app/(app)/admin/actions";
 import { Alert, Label } from "@/components/ui/Field";
 import { SubmitButton } from "@/components/ui/SubmitButton";
 import { Avatar } from "@/components/ui/Page";
@@ -97,7 +97,7 @@ export function RosterPanel({
             {roster.map((player) => (
               <tr
                 key={player.id}
-                className="border-b border-white/10 last:border-0 hover:bg-deep-800"
+                className="border-b border-white/10 last:border-0 hover:bg-white/[0.06]"
               >
                 <td className="px-2.5 py-3">
                   <div className="flex items-center gap-2.5">
@@ -226,8 +226,8 @@ function RowButton({
       className={clsx(
         "rounded-lg px-2.5 py-1.5 text-[12px] font-semibold transition",
         danger
-          ? "text-aqua-300 hover:bg-aqua-500/15"
-          : "text-ink-600 hover:bg-deep-700",
+          ? "text-brand-300 hover:bg-brand-500/15"
+          : "text-ink-600 hover:bg-white/[0.08]",
       )}
     >
       {children}
@@ -254,7 +254,7 @@ function Secret({
     <div className="flex items-center gap-2">
       <span
         className={clsx(
-          "select-all rounded-lg bg-deep-700 px-2 py-1 text-[12.5px] ring-1 ring-white/10",
+          "select-all control rounded-lg px-2 py-1 text-[12.5px] ring-1 ring-white/10",
           mono ? "font-mono tabular-nums" : "font-mono",
           !revealed && "blur-[5px]",
         )}
@@ -278,7 +278,7 @@ function Secret({
             setCopied(false);
           }
         }}
-        className="text-[11.5px] font-semibold text-ink-500 transition hover:text-aqua-300"
+        className="text-[11.5px] font-semibold text-ink-500 transition hover:text-brand-300"
       >
         {copied ? (
           <motion.span

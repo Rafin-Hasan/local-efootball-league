@@ -179,7 +179,7 @@ export function TournamentSetupForm() {
                   disabled={rows.length <= 2}
                   aria-label={`Remove player ${index + 1}`}
                   className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-ink-400
-                             transition hover:bg-aqua-500/15 hover:text-aqua-300
+                             transition hover:bg-brand-500/15 hover:text-brand-300
                              disabled:pointer-events-none disabled:opacity-30"
                 >
                   ×

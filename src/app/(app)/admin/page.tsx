@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import { Copilot } from "@/components/admin/Copilot";
 import { RosterPanel } from "@/components/admin/RosterPanel";
 import { FixtureGenerator, ScoreEntry } from "@/components/admin/ScorePanel";
-import { TopNav } from "@/components/shell/TopNav";
 import { PageHeader, PageShell, StatTile } from "@/components/ui/Page";
 import { getSession } from "@/lib/auth/session";
 import { getAdminData } from "@/lib/queries";
@@ -33,7 +32,6 @@ export default async function AdminPage() {
 
   return (
     <>
-      <TopNav session={session} />
       <PageShell>
         <PageHeader
           eyebrow="Control room"
@@ -50,7 +48,7 @@ export default async function AdminPage() {
             sub={`of ${data.matchCount}`}
             accent="win"
           />
-          <StatTile label="Outstanding" value={remaining} accent="aqua" />
+          <StatTile label="Outstanding" value={remaining} accent="brand" />
         </div>
 
         <div className="space-y-5">

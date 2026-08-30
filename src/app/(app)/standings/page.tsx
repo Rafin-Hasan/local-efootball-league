@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Reveal } from "@/components/motion/Reveal";
-import { TopNav } from "@/components/shell/TopNav";
 import { StandingsTables } from "@/components/standings/StandingsTables";
 import { PageHeader, PageShell, StatTile } from "@/components/ui/Page";
 import { getSession } from "@/lib/auth/session";
@@ -31,7 +30,6 @@ export default async function StandingsPage() {
 
   return (
     <>
-      <TopNav session={session} />
       <PageShell>
         <PageHeader
           eyebrow="Live table"
@@ -60,7 +58,7 @@ export default async function StandingsPage() {
             sub={
               topScorer?.goalsFor ? `${topScorer.goalsFor} goals` : "No goals yet"
             }
-            accent="aqua"
+            accent="brand"
           />
           <StatTile label="Players" value={data.playerCount} />
           <StatTile

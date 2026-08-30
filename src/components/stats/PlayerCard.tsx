@@ -95,7 +95,7 @@ export function PortfolioCard({
             />
             <defs>
               <linearGradient id="rating-arc" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#FA5F6B" />
+                <stop offset="0%" stopColor="#FF5A67" />
                 <stop offset="100%" stopColor="#A50E19" />
               </linearGradient>
             </defs>
@@ -152,9 +152,9 @@ function RankChip({
   tone: "ink" | "gold" | "brand";
 }) {
   const styles = {
-    ink: "bg-aqua-500/15 text-ink-700 ring-white/10",
+    ink: "bg-brand-500/15 text-ink-700 ring-white/10",
     gold: "bg-gold-400/20 text-gold-300 ring-gold-400/45",
-    brand: "bg-aqua-500/15 text-aqua-300 ring-aqua-400/40",
+    brand: "bg-brand-500/15 text-brand-300 ring-brand-400/40",
   }[tone];
 
   return (
@@ -193,7 +193,7 @@ export function ResultSplit({ row }: { row: PlayerRow }) {
         </p>
       ) : (
         <>
-          <div className="mt-4 flex h-3 overflow-hidden rounded-full bg-aqua-500/15">
+          <div className="mt-4 flex h-3 overflow-hidden rounded-full bg-brand-500/15">
             {segments.map((segment) =>
               segment.value === 0 ? null : (
                 <motion.div
@@ -215,7 +215,7 @@ export function ResultSplit({ row }: { row: PlayerRow }) {
                     className={clsx("h-2 w-2 rounded-full", segment.className)}
                     aria-hidden
                   />
-                  <span className="text-[11.5px] font-semibold uppercase tracking-wide text-ink-400">
+                  <span className="text-[11.5px] font-semibold uppercase tracking-wide text-ink-500">
                     {segment.label}
                   </span>
                 </div>
@@ -252,11 +252,11 @@ export function MatchHistory({ history }: { history: PlayerMatchRow[] }) {
               initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3, delay: Math.min(index, 8) * 0.04 }}
-              className="flex items-center gap-3 rounded-2xl border border-white/10 bg-deep-800 px-3.5 py-2.5"
+              className="flex items-center gap-3 well rounded-2xl px-3.5 py-2.5"
             >
               <span
                 className={clsx(
-                  "grid h-7 w-7 shrink-0 place-items-center rounded-lg text-[11px] font-bold text-white",
+                  "grid h-7 w-7 shrink-0 place-items-center rounded-lg text-[11px] font-bold text-deep-950",
                   match.outcome === "W" && "bg-win",
                   match.outcome === "D" && "bg-draw",
                   match.outcome === "L" && "bg-loss",
@@ -306,9 +306,9 @@ export function UpcomingList({
           {upcoming.slice(0, 5).map((match) => (
             <li
               key={match.id}
-              className="flex items-center gap-3 rounded-2xl border border-white/10 bg-deep-800 px-3.5 py-2.5"
+              className="flex items-center gap-3 well rounded-2xl px-3.5 py-2.5"
             >
-              <span className="chip shrink-0 bg-aqua-500/15 text-ink-600 ring-1 ring-white/10">
+              <span className="chip shrink-0 bg-brand-500/15 text-ink-600 ring-1 ring-white/10">
                 GW{match.round}
               </span>
               <span className="min-w-0 flex-1 truncate text-[13.5px] font-semibold text-ink">

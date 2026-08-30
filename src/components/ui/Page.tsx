@@ -15,7 +15,7 @@ export function PageHeader({
     <header className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div className="min-w-0">
         {eyebrow ? (
-          <span className="chip bg-aqua-500/15 text-aqua-300 ring-1 ring-aqua-400/40">
+          <span className="chip bg-brand-500/15 text-brand-300 ring-1 ring-brand-400/40">
             {eyebrow}
           </span>
         ) : null}
@@ -48,11 +48,11 @@ export function StatTile({
   label: string;
   value: React.ReactNode;
   sub?: string;
-  accent?: "ink" | "aqua" | "gold" | "win";
+  accent?: "ink" | "brand" | "gold" | "win";
 }) {
   const tone = {
     ink: "text-ink",
-    aqua: "text-aqua-300",
+    brand: "text-brand-300",
     gold: "text-gold-300",
     win: "text-win",
   }[accent];
@@ -117,7 +117,7 @@ export function FormPills({
           key={i}
           title={FORM_TITLE[result]}
           className={clsx(
-            "grid place-items-center rounded font-bold text-white",
+            "grid place-items-center rounded font-bold text-deep-950",
             size === "sm" ? "h-4 w-4 text-[9px]" : "h-5 w-5 text-[10px]",
             FORM_TONE[result],
           )}

@@ -62,7 +62,15 @@ export const sessionCookieOptions = {
   maxAge: MAX_AGE_SECONDS,
 } as const;
 
-/** Read the session inside Server Components and Server Actions. */
+/**
+ * Read the session inside Server Components and Server Actions.
+ *
+ * NOTE: this module is imported by middleware.ts, which runs on the Edge
+ * runtime. Keep it Edge-safe — importing `react` here (for `cache()`, say)
+ * pulls React into the middleware bundle and the build fails at runtime with
+ * "Cannot redefine property: __import_unsupported". Verifying the JWT twice
+ * per request is microseconds; it is not worth memoising at that cost.
+ */
 export async function getSession(): Promise<Session | null> {
   const token = cookies().get(SESSION_COOKIE)?.value;
   if (!token) return null;

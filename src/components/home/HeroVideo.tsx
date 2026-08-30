@@ -87,7 +87,7 @@ export function HeroVideo({ children }: { children: React.ReactNode }) {
       {/* A cool cast over the footage so it belongs to the water palette. */}
       <div
         aria-hidden
-        className="absolute inset-0 bg-[radial-gradient(110%_75%_at_30%_25%,rgba(18,190,219,0.16)_0%,rgba(2,6,9,0.92)_75%)]"
+        className="absolute inset-0 bg-[radial-gradient(110%_75%_at_30%_25%,rgba(225, 29, 42,0.16)_0%,rgba(2,6,9,0.92)_75%)]"
       />
 
       <motion.div
@@ -111,7 +111,7 @@ export function HeroVideo({ children }: { children: React.ReactNode }) {
             );
           }}
           className="panel-over absolute bottom-5 right-5 z-10 rounded-full px-4 py-2 text-xs
-                     font-semibold text-ink transition hover:bg-deep-700"
+                     font-semibold text-ink transition hover:bg-white/[0.08]"
         >
           <svg
             aria-hidden

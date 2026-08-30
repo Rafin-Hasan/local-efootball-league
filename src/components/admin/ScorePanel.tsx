@@ -7,7 +7,7 @@ import {
   generateFixturesAction,
   submitScoreAction,
   type AdminActionState,
-} from "@/app/admin/actions";
+} from "@/app/(app)/admin/actions";
 import { Alert } from "@/components/ui/Field";
 import { SubmitButton } from "@/components/ui/SubmitButton";
 import { EmptyState } from "@/components/ui/Page";
@@ -57,8 +57,8 @@ export function FixtureGenerator({ hasFixtures }: { hasFixtures: boolean }) {
                 className={clsx(
                   "rounded-xl px-3.5 py-2 text-[12.5px] font-semibold transition",
                   legs === value
-                    ? "bg-aqua-500 text-deep-950 shadow-glow"
-                    : "bg-deep-800 text-ink-600 ring-1 ring-white/10 hover:bg-deep-600",
+                    ? "bg-brand-500 text-white shadow-glow"
+                    : "control text-ink-600",
                 )}
               >
                 {value === 1 ? "Single round" : "Home & away"}
@@ -119,8 +119,8 @@ export function ScoreEntry({ rounds }: { rounds: FixtureRound[] }) {
             className={clsx(
               "rounded-xl px-3 py-1.5 text-[12.5px] font-semibold transition",
               round === entry.round
-                ? "bg-aqua-500 text-deep-950 shadow-glow"
-                : "bg-deep-800 text-ink-600 ring-1 ring-white/10 hover:bg-deep-600",
+                ? "bg-brand-500 text-white shadow-glow"
+                : "control text-ink-600",
             )}
           >
             GW{entry.round}
@@ -152,7 +152,7 @@ function ScoreRow({ match }: { match: FixtureRound["matches"][number] }) {
   return (
     <div
       className={clsx(
-        "rounded-2xl border border-white/10 bg-deep-800 px-3.5 py-3",
+        "well rounded-2xl px-3.5 py-3",
         match.played && "bg-win/[0.06]",
       )}
     >
@@ -195,7 +195,7 @@ function ScoreRow({ match }: { match: FixtureRound["matches"][number] }) {
             <button
               type="submit"
               title="Clear this result and reopen the fixture"
-              className="rounded-lg px-2 py-1.5 text-[12px] font-semibold text-ink-500 transition hover:bg-aqua-500/15 hover:text-aqua-300"
+              className="rounded-lg px-2 py-1.5 text-[12px] font-semibold text-ink-500 transition hover:bg-brand-500/15 hover:text-brand-300"
             >
               Clear
             </button>
@@ -204,7 +204,7 @@ function ScoreRow({ match }: { match: FixtureRound["matches"][number] }) {
       </div>
 
       {error ? (
-        <p role="alert" className="mt-2 text-[12px] font-medium text-aqua-300">
+        <p role="alert" className="mt-2 text-[12px] font-medium text-brand-300">
           {error}
         </p>
       ) : null}

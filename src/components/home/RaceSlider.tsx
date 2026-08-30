@@ -17,7 +17,7 @@ export type RaceItem = {
   meta?: string;
 };
 
-type Accent = "gold" | "aqua" | "ink";
+type Accent = "gold" | "brand" | "ink";
 
 const ACCENT: Record<
   Accent,
@@ -29,16 +29,16 @@ const ACCENT: Record<
     chip: "bg-gold-400/20 text-gold-300 ring-1 ring-gold-400/40",
     glow: "shadow-[0_10px_30px_-12px_rgba(224,168,30,0.55)]",
   },
-  aqua: {
-    bar: "bg-gradient-to-r from-aqua-300 to-aqua-500",
-    ring: "ring-aqua-400/40",
-    chip: "bg-aqua-500/15 text-aqua-300 ring-1 ring-aqua-400/40",
-    glow: "shadow-[0_10px_30px_-12px_rgba(18,190,219,0.55)]",
+  brand: {
+    bar: "bg-gradient-to-r from-brand-400 to-brand-600",
+    ring: "ring-brand-400/40",
+    chip: "bg-brand-500/15 text-brand-300 ring-1 ring-brand-400/40",
+    glow: "shadow-[0_10px_30px_-12px_rgba(225, 29, 42,0.55)]",
   },
   ink: {
     bar: "bg-gradient-to-r from-ink-600 to-ink",
     ring: "ring-white/10",
-    chip: "bg-aqua-500/15 text-ink-700 ring-1 ring-white/10",
+    chip: "bg-brand-500/15 text-ink-700 ring-1 ring-white/10",
     glow: "shadow-[0_10px_30px_-12px_rgba(255,255,255,0.18)]",
   },
 };
@@ -49,7 +49,7 @@ export function RaceSlider({
   title,
   subtitle,
   items,
-  accent = "aqua",
+  accent = "brand",
   emptyMessage = "No results yet — the race begins at the first kickoff.",
 }: {
   title: string;
@@ -180,13 +180,13 @@ function RaceCard({
           <span
             className={clsx(
               "scoreboard grid h-7 w-7 place-items-center rounded-md text-[13px]",
-              podium ? tone.chip : "bg-deep-700 text-ink-500 ring-1 ring-white/10",
+              podium ? tone.chip : "control text-ink-500",
             )}
           >
             {rank}
           </span>
           {item.meta ? (
-            <span className="chip bg-deep-800 text-ink-500 ring-1 ring-white/10">{item.meta}</span>
+            <span className="chip control text-ink-500">{item.meta}</span>
           ) : null}
         </div>
 
@@ -194,7 +194,7 @@ function RaceCard({
           <div className="scoreboard text-3xl leading-none tabular-nums text-ink">
             {item.value}
           </div>
-          <div className="text-[11px] font-semibold uppercase tracking-wide text-ink-400">
+          <div className="text-[11px] font-semibold uppercase tracking-wide text-ink-500">
             {item.unit}
           </div>
         </div>
@@ -233,7 +233,7 @@ function RaceCard({
               key={i}
               title={FORM_TITLE[result]}
               className={clsx(
-                "grid h-5 w-5 place-items-center rounded text-[10px] font-bold text-white",
+                "grid h-5 w-5 place-items-center rounded text-[10px] font-bold text-deep-950",
                 result === "W" && "bg-win",
                 result === "D" && "bg-draw",
                 result === "L" && "bg-loss",
