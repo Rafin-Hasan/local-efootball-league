@@ -17,9 +17,14 @@ export default defineConfig({
      * The placeholder only ever satisfies that load. Anything that actually
      * talks to a database (migrate, studio, seed) still fails loudly on
      * connect when DATABASE_URL is unset, which is the correct outcome.
+     *
+     * `||` rather than `??` on purpose: an empty string is a misconfiguration,
+     * not a value, and `??` would pass it straight through to Prisma as a real
+     * URL — which is how a blank Vercel variable became "Connection url is
+     * empty" instead of anything actionable.
      */
     url:
-      process.env.DATABASE_URL ??
+      process.env.DATABASE_URL?.trim() ||
       "postgresql://placeholder:placeholder@localhost:5432/placeholder",
   },
 });

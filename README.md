@@ -254,7 +254,7 @@ and is not worth degrading the animation for.
 | --- | --- |
 | `npm run dev` | Dev server |
 | `npm run build` | Production build |
-| `npm run vercel-build` | Vercel's build: applies migrations, then builds |
+| `npm run vercel-build` | Vercel's build: checks env, applies migrations, then builds |
 | `npm run test` | Engine unit tests |
 | `npm run db:migrate` | Create and apply a migration |
 | `npm run db:seed` | Reset and reseed the demo league |
@@ -302,6 +302,19 @@ cookies, so anyone holding it can mint an admin session.
 Migrations run automatically through `vercel-build`. The database starts empty:
 open `/login`, use the Admin tab, and create your first tournament. Do not run
 the seed against production — it deletes existing tournaments.
+
+The build runs `scripts/check-env.mjs` first and stops with a named variable if
+anything required is missing, rather than letting it surface later as an opaque
+driver error. If you see:
+
+```
+Error: Connection url is empty
+```
+
+that is Prisma reporting a `DATABASE_URL` that exists but has **no value** — a
+variable added in Vercel with a blank box, or one saved for a different
+environment than the one you are deploying. It is distinct from an unset
+variable, which fails as `P1001: Can't reach database server`.
 
 > **Before sharing the URL:** the admin side is unauthenticated by design (see
 > **Signing in**). Anyone who reaches `/login` can create a tournament or open an
