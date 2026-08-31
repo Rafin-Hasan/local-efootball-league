@@ -24,7 +24,7 @@ try {
 const REQUIRED = [
   {
     name: "DATABASE_URL",
-    hint: "A Postgres connection string. On Vercel use a hosted database (Neon's pooled URL); a localhost URL is unreachable from the build.",
+    hint: "A hosted Postgres connection string (e.g. Neon's pooled URL). A localhost URL will not work — the build machine cannot reach your laptop.",
     check: (v) => /^postgres(ql)?:\/\//.test(v),
     checkHint: "must start with postgres:// or postgresql://",
   },
@@ -67,6 +67,12 @@ if (problems.length > 0) {
     ...problems.map((p, i) => `  ${i + 1}. ${p}`),
     "",
     "  Set these in your hosting provider's environment settings and redeploy.",
+    "",
+    "  Note: these are needed at BUILD time (to run migrations) and at RUN time",
+    "  (every request queries the database and verifies the session cookie).",
+    "  On Netlify, leave the variable scope set to all scopes — a Builds-only",
+    "  scope passes this check and then fails on the first request.",
+    "",
     "  See the Deploying section of README.md.",
     "",
   ];

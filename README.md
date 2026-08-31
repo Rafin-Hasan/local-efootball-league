@@ -307,6 +307,12 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 Use a **different** `SESSION_SECRET` from your local one. It signs session
 cookies, so anyone holding it can mint an admin session.
 
+Both variables are needed at **build time** (to run migrations) and at **run
+time** (every request queries the database and verifies the session cookie). On
+Netlify, leave the scope on *all scopes* — a Builds-only variable passes the
+build and then fails on the first request. On Vercel, tick every environment you
+deploy to.
+
 ### 4. Deploy
 
 Migrations run automatically through `vercel-build`. The database starts empty:
