@@ -30,8 +30,14 @@ export async function signSession(session: Session): Promise<string> {
 
 /** Edge- and Node-safe: no database access, signature check only. */
 export async function verifySession(token: string): Promise<Session | null> {
+  // Resolved outside the try on purpose. A missing or too-short SESSION_SECRET
+  // is a configuration fault, not a bad token: swallowing it here would turn a
+  // one-line setup mistake into a silent redirect loop back to /login with
+  // nothing in the logs to explain it.
+  const key = secret();
+
   try {
-    const { payload } = await jwtVerify(token, secret(), { issuer: ISSUER });
+    const { payload } = await jwtVerify(token, key, { issuer: ISSUER });
     if (payload.role === "admin" && typeof payload.tournamentId === "string") {
       return { role: "admin", tournamentId: payload.tournamentId };
     }

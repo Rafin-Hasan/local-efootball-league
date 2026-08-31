@@ -68,11 +68,30 @@ export function TopNav({ session }: { session: Session }) {
               </span>
             </span>
 
+            {/*
+              Below `md` the nav list is hidden and the bottom bar carries only
+              the five player destinations, which left an admin on a phone with
+              no route to score entry or the fixture generator at all. This is
+              that route, and it is hidden from `md` up where the nav list
+              already carries an Admin link.
+            */}
+            {session.role === "admin" ? (
+              <Link
+                href="/admin"
+                className="grid min-h-[44px] place-items-center rounded-2xl border
+                           border-gold-300/35 px-3 text-[13px] font-semibold
+                           text-gold-300 transition hover:bg-white/[0.14] md:hidden"
+              >
+                Admin
+              </Link>
+            ) : null}
+
             <form action={logoutAction}>
               <button
                 type="submit"
-                className="rounded-2xl px-3 py-2 text-[13px] font-semibold text-ink-600
-                           transition hover:bg-white/[0.14] hover:text-ink"
+                className="grid min-h-[44px] place-items-center rounded-2xl px-3
+                           text-[13px] font-semibold text-ink-600 transition
+                           hover:bg-white/[0.14] hover:text-ink"
               >
                 Sign out
               </button>
