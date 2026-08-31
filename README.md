@@ -264,7 +264,7 @@ and is not worth degrading the animation for.
 
 ---
 
-## Deploying to Vercel
+## Deploying
 
 The app needs a **hosted** Postgres. The local `prisma dev` database lives on
 localhost and Vercel cannot reach it, so that is the first real step — Neon's
@@ -277,9 +277,18 @@ Sign up at [neon.tech](https://neon.tech), create a project, and copy the
 
 ### 2. Import the repo
 
-In Vercel, *Add New → Project*, and pick this repository. Leave the framework
-preset (Next.js) and the build settings alone — Vercel runs the `vercel-build`
-script, which applies migrations and then builds.
+**Vercel** — *Add New → Project*, pick this repository, leave the framework
+preset and build settings alone. Vercel runs `vercel-build` automatically.
+
+**Netlify** — import the repository and leave the build settings alone;
+`netlify.toml` sets the command and pins Node 22 (Prisma 7 requires
+`^20.19 || ^22.12 || >=24`, which is above some Netlify defaults).
+
+Both hosts end up running the same `build:deploy` script: check the
+environment, apply migrations, then build. **Do not override the build command
+with `npm run build`** — that is plain `next build`, which compiles happily
+without a database and then fails on every request at runtime, because nothing
+applied the migration.
 
 ### 3. Set environment variables
 
@@ -312,9 +321,21 @@ Error: Connection url is empty
 ```
 
 that is Prisma reporting a `DATABASE_URL` that exists but has **no value** — a
-variable added in Vercel with a blank box, or one saved for a different
-environment than the one you are deploying. It is distinct from an unset
-variable, which fails as `P1001: Can't reach database server`.
+variable added with a blank box, or one saved for a different environment than
+the one you are deploying. It is distinct from an unset variable, which fails
+as `P1001: Can't reach database server`.
+
+If the site **builds and deploys** but every page shows:
+
+```
+Application error: a server-side exception has occurred
+Digest: <number>
+```
+
+the build ran `next build` rather than `build:deploy`, so the migration never
+applied and the queries are hitting a schema with no tables. The digest is a
+hash; the real message is in the host's function logs (Netlify: *Logs →
+Functions*; Vercel: *Logs*). Check the build command first.
 
 > **Before sharing the URL:** the admin side is unauthenticated by design (see
 > **Signing in**). Anyone who reaches `/login` can create a tournament or open an

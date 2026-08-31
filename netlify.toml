@@ -1,0 +1,19 @@
+# Netlify runs `npm run build` unless told otherwise, which is plain
+# `next build` — it compiles fine without a database, deploys, and then every
+# request fails at runtime because the migration never ran and nothing checked
+# the environment. Point it at the same deploy build Vercel uses instead.
+[build]
+  command = "npm run build:deploy"
+  publish = ".next"
+
+[build.environment]
+  # Prisma 7 requires ^20.19 || ^22.12 || >=24. Netlify's default has been
+  # older than that floor, which breaks `prisma generate` during install.
+  NODE_VERSION = "22"
+
+# Required for Next.js App Router on Netlify: server components, route handlers
+# and middleware run as functions rather than static files. Netlify installs
+# this itself when a Next.js project is detected; declaring it makes the
+# dependency explicit rather than incidental.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

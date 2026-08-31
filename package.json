@@ -2,10 +2,14 @@
   "name": "kickoff-os",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "^20.19 || ^22.12 || >=24"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "vercel-build": "node scripts/check-env.mjs && prisma migrate deploy && next build",
+    "build:deploy": "node scripts/check-env.mjs && prisma migrate deploy && next build",
+    "vercel-build": "npm run build:deploy",
     "start": "next start",
     "lint": "next lint",
     "test": "vitest run",
