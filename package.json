@@ -6,7 +6,8 @@
     "node": "^20.19 || ^22.12 || >=24"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbo",
+    "dev:webpack": "next dev",
     "build": "next build",
     "build:deploy": "node scripts/check-env.mjs && prisma migrate deploy && next build",
     "vercel-build": "npm run build:deploy",

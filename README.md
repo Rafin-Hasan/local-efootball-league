@@ -252,7 +252,8 @@ and is not worth degrading the animation for.
 
 | Command | What it does |
 | --- | --- |
-| `npm run dev` | Dev server |
+| `npm run dev` | Dev server (Turbopack) |
+| `npm run dev:webpack` | Dev server on webpack, if Turbopack misbehaves |
 | `npm run build` | Production build |
 | `npm run vercel-build` | Vercel's build: checks env, applies migrations, then builds |
 | `npm run test` | Engine unit tests |
@@ -346,9 +347,21 @@ Functions*; Vercel: *Logs*). Check the build command first.
 
 ## Why dev feels slow
 
-`next dev` compiles each route the first time you visit it. Measured on this
-project, that is **4–5 seconds** for the first hit on `/standings` or `/admin`,
-then 37–57ms for every hit after. A production build has no such step:
+`next dev` compiles each route the first time you visit it. That first hit is
+the slow one; every hit after is fast. `npm run dev` uses Turbopack, which cuts
+it substantially — measured across all six routes, same machine, full page
+requests:
+
+| dev server | cold (all 6 routes) | warm (best) |
+| --- | --- | --- |
+| `next dev` (webpack) | 38.8 s — up to 18.5 s for one route | 98–160 ms |
+| `next dev --turbo` | **12.2 s** — 1.6–2.6 s per route | 270–405 ms |
+
+Turbopack is ~3× faster to first paint on a route and ~3× slower on repeat
+requests. First-visit compile is the part that actually hurts, so it is the
+default; `npm run dev:webpack` is there if it ever misbehaves.
+
+Neither number reflects production, which has no compile step at all:
 
 | | first visit | repeat |
 | --- | --- | --- |

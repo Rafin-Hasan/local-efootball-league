@@ -17,7 +17,7 @@
  *   .panel-over      panes sitting on video
  *   .rail            navigation chrome, frosted and glossy
  *   .modal           the most elevated surface: the sign-in window
- *   .well            nested item inside a panel, 10px blur
+ *   .well            nested item inside a panel (translucent, no blur)
  *   .control         inactive pill: filter chips, gameweek selectors, tags
  *
  * Three rules hold it together:
@@ -25,11 +25,12 @@
  *      caustic field or over video, never over flat colour, where a blur is
  *      just wasted GPU.
  *   2. Depth is translucency and blur, not drop shadow.
- *   3. Blur depth decreases as surfaces nest. A .well inside a .panel is
- *      already sitting on blurred output, so it uses 10px rather than 18px;
- *      stacking two heavy blurs costs frames and looks no glassier. Elements
- *      that repeat per row — rank badges, form pills — use translucency with
- *      no backdrop-filter at all, for the same reason.
+ *   3. Only the outermost surface blurs. A .well or .control sits inside an
+ *      already-blurred .panel, so its own backdrop-filter would sample an
+ *      already-blurred surface: one compositing layer per instance for no
+ *      visible gain. Nested surfaces, and anything repeating per row (rank
+ *      badges, form pills), are translucent only. Measured: this took the
+ *      home page from 66 backdrop-filter layers to 37.
  */
 
 @layer base {
@@ -132,9 +133,13 @@
   }
 
   /*
-   * Nested surface: a list item or sub-card floating inside a .panel. Lighter
-   * blur than the parent because it is already sitting on blurred output —
-   * stacking two heavy blurs costs frames without looking any glassier.
+   * Nested surface: a list item or sub-card floating inside a .panel.
+   *
+   * Deliberately has no backdrop-filter of its own. The parent has already
+   * blurred this region, so a second filter would sample an already-blurred
+   * surface — it reads the same and costs a compositing layer per instance,
+   * and these repeat dozens of times per page. Translucency alone is what
+   * makes it read as glass.
    */
   .well {
     background: linear-gradient(
@@ -142,8 +147,6 @@
       rgba(74, 38, 42, 0.30),
       rgba(10, 8, 9, 0.46)
     );
-    backdrop-filter: blur(10px) saturate(135%);
-    -webkit-backdrop-filter: blur(10px) saturate(135%);
     border: 1px solid var(--edge);
     box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
   }
@@ -161,14 +164,12 @@
   }
 
   /*
-   * Glass pill for inactive controls — filter chips, gameweek selectors,
-   * status tags. The active state is the solid red gradient, so these must
-   * stay clearly recessed against it.
+   * Pill for inactive controls — filter chips, gameweek selectors, status tags.
+   * The active state is the solid red gradient, so these must stay clearly
+   * recessed against it. No backdrop-filter, for the same reason as .well.
    */
   .control {
     background: rgba(58, 30, 33, 0.34);
-    backdrop-filter: blur(10px) saturate(140%);
-    -webkit-backdrop-filter: blur(10px) saturate(140%);
     border: 1px solid var(--edge);
     transition: background 180ms ease, border-color 180ms ease;
   }
