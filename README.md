@@ -254,12 +254,61 @@ and is not worth degrading the animation for.
 | --- | --- |
 | `npm run dev` | Dev server |
 | `npm run build` | Production build |
+| `npm run vercel-build` | Vercel's build: applies migrations, then builds |
 | `npm run test` | Engine unit tests |
 | `npm run db:migrate` | Create and apply a migration |
 | `npm run db:seed` | Reset and reseed the demo league |
 | `npm run db:studio` | Prisma Studio |
 | `npm run clean` | Delete `.next` |
 | `npm run dev:clean` | Clean, then start the dev server |
+
+---
+
+## Deploying to Vercel
+
+The app needs a **hosted** Postgres. The local `prisma dev` database lives on
+localhost and Vercel cannot reach it, so that is the first real step — Neon's
+free tier is what this was built against.
+
+### 1. Create a database
+
+Sign up at [neon.tech](https://neon.tech), create a project, and copy the
+**pooled** connection string (it has `-pooler` in the host).
+
+### 2. Import the repo
+
+In Vercel, *Add New → Project*, and pick this repository. Leave the framework
+preset (Next.js) and the build settings alone — Vercel runs the `vercel-build`
+script, which applies migrations and then builds.
+
+### 3. Set environment variables
+
+| Variable | Required | Value |
+| --- | --- | --- |
+| `DATABASE_URL` | yes | Neon pooled connection string |
+| `SESSION_SECRET` | yes | 32+ random characters |
+| `ANTHROPIC_API_KEY` | no | Enables the real AI copilot; without it the panel falls back to templated summaries |
+| `ANTHROPIC_MODEL` | no | Defaults to `claude-opus-5` |
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+Use a **different** `SESSION_SECRET` from your local one. It signs session
+cookies, so anyone holding it can mint an admin session.
+
+### 4. Deploy
+
+Migrations run automatically through `vercel-build`. The database starts empty:
+open `/login`, use the Admin tab, and create your first tournament. Do not run
+the seed against production — it deletes existing tournaments.
+
+> **Before sharing the URL:** the admin side is unauthenticated by design (see
+> **Signing in**). Anyone who reaches `/login` can create a tournament or open an
+> existing one as its admin. Put the deployment behind Vercel's password
+> protection, or accept that the link itself is the only thing guarding it.
+
+---
 
 ## Why dev feels slow
 
